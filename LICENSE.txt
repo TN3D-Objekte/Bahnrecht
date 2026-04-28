@@ -1,0 +1,61 @@
+Creative Commons Namensnennung - Nicht-kommerziell - Keine Bearbeitungen 4.0 International
+
+Copyright (c) 2026 Thomas [Nachname] — BahnRecht
+
+=============================================================================
+
+Sie dürfen:
+
+  Teilen — das Material in jedwedem Format oder Medium vervielfältigen
+  und weiterverbreiten, auch kommerziell nicht.
+
+=============================================================================
+
+Unter folgenden Bedingungen:
+
+  Namensnennung (BY)
+  Sie müssen angemessene Urheber- und Rechteangaben machen, einen Link
+  zur Lizenz beifügen und angeben, ob Änderungen vorgenommen wurden.
+  Angabe: "BahnRecht von Thomas [Nachname] — bahnrecht.app"
+
+  Nicht kommerziell (NC)
+  Sie dürfen das Material nicht für kommerzielle Zwecke nutzen.
+  Jede kommerzielle Nutzung — einschließlich Einbindung in kostenpflichtige
+  Produkte, SaaS-Dienste oder Werbeplattformen — bedarf der ausdrücklichen
+  schriftlichen Genehmigung des Urhebers.
+
+  Keine Bearbeitungen (ND)
+  Wenn Sie das Material remixen, verändern oder darauf aufbauen, dürfen
+  Sie die bearbeitete Fassung des Materials nicht verbreiten oder
+  veröffentlichen. Abgeleitete Werke sind nur mit ausdrücklicher
+  schriftlicher Genehmigung gestattet.
+
+=============================================================================
+
+Was diese Lizenz NICHT einschränkt:
+
+  - Kostenlose private Nutzung durch Endnutzer
+  - Teilen des Links zur offiziellen Veröffentlichung
+  - Berichterstattung in Presse und Medien
+  - Zitieren für Bildungs- und Informationszwecke
+
+=============================================================================
+
+Rechtlicher Hinweis:
+
+  "BahnRecht" ist eine Eigenentwicklung. Die Marke "BahnRecht" sowie das
+  Logo (BR-Icon in Rot) sind urheberrechtlich geschützt. Eine Anmeldung
+  beim Deutschen Patent- und Markenamt (DPMA) ist beabsichtigt.
+
+  Bei Fragen zur kommerziellen Lizenzierung:
+  [Deine Kontakt-E-Mail]
+
+=============================================================================
+
+Vollständiger Lizenztext (englisch):
+https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
+
+Kurzübersicht:
+https://creativecommons.org/licenses/by-nc-nd/4.0/deed.de
+
+=============================================================================
