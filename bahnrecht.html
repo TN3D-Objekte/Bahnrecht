@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<!--
+  BahnRecht — Fahrgastrechte leicht gemacht
+  Copyright © 2026 TN 3D-OBJEKTE
+
+  Lizenz: Creative Commons BY-NC-ND 4.0
+  https://creativecommons.org/licenses/by-nc-nd/4.0/deed.de
+
+  ✅ Kostenlose Nutzung erlaubt
+  ❌ Kein kommerzieller Einsatz ohne Genehmigung
+  ❌ Keine veränderten Versionen veröffentlichen
+
+  "BahnRecht" und das BR-Logo sind urheberrechtlich geschützt.
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BahnRecht v2 – Fahrgastrechte leicht gemacht</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BahnRecht">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#E8001C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0C0F1A;--surface:#121623;--card:#181D2E;--card2:#1E2438;--border:#252D48;
+  --red:#E8001C;--rg:rgba(232,0,28,.12);--green:#10B981;--amber:#F59E0B;--blue:#60A5FA;--purple:#A78BFA;
+  --text:#EEF2FF;--muted:#64748B;--font:"Outfit",sans-serif;--mono:"DM Mono",monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;line-height:1.6;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:100;gap:.75rem;}
+.logo{display:flex;align-items:center;gap:.55rem;font-size:1.05rem;font-weight:800;letter-spacing:-.03em;}
+.logo-i{background:var(--red);color:#fff;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 .75rem;display:flex;overflow-x:auto;scrollbar-width:none;}
+nav::-webkit-scrollbar{display:none;}
+.nb{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:.78rem;font-weight:600;padding:.75rem .85rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s;}
+.nb:hover{color:var(--text);}.nb.active{color:var(--text);border-bottom-color:var(--red);}
+main{max-width:760px;margin:0 auto;padding:1.1rem;}
+.sec{display:none;}.sec.active{display:block;animation:fu .2s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem;margin-bottom:.85rem;}
+.stit{font-size:.95rem;font-weight:700;margin-bottom:.85rem;letter-spacing:-.02em;}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.25rem;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.9rem 1rem;}
+.sl{font-size:.7rem;color:var(--muted);font-weight:500;margin-bottom:.15rem;}
+.sv{font-size:1.3rem;font-weight:700;font-family:var(--mono);}
+.sv.am{color:var(--amber)}.sv.gr{color:var(--green)}.sv.bl{color:var(--blue)}.sv.pu{color:var(--purple)}
+.fg{margin-bottom:.8rem;}
+label{display:block;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.3rem;}
+input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:.9rem;padding:.55rem .8rem;transition:.15s;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 2px var(--rg);}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.45);cursor:pointer;}
+input[type=file]{display:none;}
+select option{background:var(--surface);}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.ttg{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.8rem;}
+.ttc{background:var(--surface);border:2px solid var(--border);border-radius:10px;padding:.7rem .85rem;cursor:pointer;transition:.15s;}
+.ttc:hover{border-color:rgba(232,0,28,.4);}.ttc.sel{border-color:var(--red);background:var(--rg);}
+.ttc-name{font-size:.82rem;font-weight:700;margin-bottom:.15rem;}
+.ttc-sub{font-size:.68rem;color:var(--muted);line-height:1.4;}.ttc.sel .ttc-sub{color:rgba(238,242,255,.55);}
+.badge-1kl{display:inline-block;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.4);color:var(--purple);border-radius:4px;font-size:.58rem;font-weight:700;letter-spacing:.05em;padding:.05rem .3rem;vertical-align:middle;margin-left:.25rem;}
+.eb{border-radius:9px;padding:.8rem 1rem;margin:.4rem 0 .8rem;border:1px solid;}
+.en{background:rgba(30,30,50,.5);border-color:var(--border);color:var(--muted);}
+.elo{background:rgba(245,158,11,.08);border-color:var(--amber);color:var(--amber);}
+.ehi{background:rgba(16,185,129,.08);border-color:var(--green);color:var(--green);}
+.eca{background:rgba(232,0,28,.08);border-color:var(--red);color:var(--red);}
+.elb{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;}
+.eam{font-size:1.4rem;font-weight:700;font-family:var(--mono);}
+.esub{font-size:.72rem;margin-top:.2rem;opacity:.75;}
+.kl1-note{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:9px;padding:.75rem 1rem;font-size:.78rem;color:#C4B5FD;margin-bottom:.85rem;}
+.kl1-note strong{color:var(--purple);}
+.btn{display:inline-flex;align-items:center;gap:.3rem;border:none;border-radius:8px;font-family:var(--font);font-weight:600;font-size:.8rem;padding:.5rem .9rem;cursor:pointer;transition:.15s;text-decoration:none;white-space:nowrap;}
+.btn-p{background:var(--red);color:#fff;}.btn-p:hover{background:#c5001a;transform:translateY(-1px);}
+.btn-s{background:var(--surface);border:1px solid var(--border);color:var(--text);}.btn-s:hover{border-color:rgba(232,0,28,.5);}
+.btn-g{background:none;color:var(--muted);padding:.3rem .5rem;font-size:.75rem;}.btn-g:hover{color:var(--text);}
+.btn-f{width:100%;justify-content:center;padding:.7rem;font-size:.9rem;}
+.ec{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.9rem 1.1rem;margin-bottom:.6rem;animation:fu .2s ease;}
+.eh{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;margin-bottom:.2rem;}
+.et{font-size:.95rem;font-weight:700;font-family:var(--mono);}
+.er{font-size:.82rem;color:var(--muted);margin-bottom:.4rem;}
+.em{display:flex;gap:.75rem;font-size:.75rem;color:var(--muted);margin-bottom:.6rem;flex-wrap:wrap;}
+.ea{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
+.badge{display:inline-block;padding:.15rem .5rem;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.04em;white-space:nowrap;}
+.bp{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.bsu{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.3);}
+.br{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.bab{background:rgba(232,0,28,.12);color:var(--red);border:1px solid rgba(232,0,28,.3);}
+.bn{background:rgba(100,116,139,.12);color:var(--muted);border:1px solid rgba(100,116,139,.25);}
+.at{font-family:var(--mono);font-weight:600;font-size:.78rem;}
+.agr{color:var(--green)}.aam{color:var(--amber)}.are{color:var(--red)}.apu{color:var(--purple)}
+.lp{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:1rem 1.1rem;font-family:var(--mono);font-size:.75rem;line-height:1.9;white-space:pre-wrap;color:var(--text);max-height:400px;overflow-y:auto;}
+.db-btn{background:linear-gradient(135deg,#E8001C,#A8001A);color:#fff;border-radius:11px;padding:.9rem 1.15rem;display:flex;align-items:center;justify-content:space-between;text-decoration:none;font-weight:700;font-size:.88rem;margin-bottom:.85rem;transition:.15s;box-shadow:0 4px 18px rgba(232,0,28,.22);}
+.db-btn:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(232,0,28,.32);}
+.db-sub{font-size:.68rem;font-weight:400;opacity:.7;margin-top:.1rem;}
+.tip{background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:8px;padding:.6rem .85rem;font-size:.8rem;color:#93C5FD;margin-bottom:.45rem;display:flex;gap:.55rem;align-items:flex-start;}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:.85rem;}
+.info-card-hdr{background:linear-gradient(135deg,#1A2035,#1E2847);padding:.9rem 1.1rem;font-weight:700;font-size:.88rem;border-bottom:1px solid var(--border);}
+.info-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.info-table{width:100%;border-collapse:collapse;font-size:.78rem;min-width:520px;}
+.info-table th{background:rgba(30,36,56,.8);padding:.45rem .8rem;text-align:left;font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.info-table td{padding:.5rem .8rem;border-bottom:1px solid rgba(37,45,72,.5);vertical-align:top;}
+.info-table tr:last-child td{border-bottom:none;}
+.it-mono{font-family:var(--mono);font-weight:600;}
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:2.5rem 1rem;text-align:center;cursor:pointer;transition:.15s;color:var(--muted);}
+.drop-zone:hover{border-color:var(--red);color:var(--text);}.drop-zone.has-img{padding:0;border-color:var(--border);}
+.drop-zone img{width:100%;border-radius:10px;display:block;}
+.ocr-prog{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;font-size:.8rem;margin:.75rem 0;}
+.pb-wrap{background:rgba(255,255,255,.06);border-radius:4px;height:6px;margin-top:.4rem;overflow:hidden;}
+.pb{background:var(--red);height:6px;border-radius:4px;transition:width .3s;}
+.ocr-out{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;font-size:.75rem;font-family:var(--mono);white-space:pre-wrap;max-height:120px;overflow-y:auto;color:var(--muted);margin-top:.6rem;}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);}
+.notice{background:rgba(232,0,28,.06);border:1px solid rgba(232,0,28,.18);border-radius:9px;padding:.65rem .9rem;font-size:.78rem;color:#FCA5A5;margin:.7rem 0;}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:flex-end;justify-content:center;padding:1rem;}
+.mo.open{display:flex;}
+.md{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:1.3rem;width:100%;max-width:500px;animation:su .2s ease;}
+@keyframes su{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;font-weight:700;margin-bottom:.7rem;}
+hr{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="logo-i">BR</div>BahnRecht</div>
+  <span style="margin-left:auto;font-size:.68rem;color:var(--muted)">Fahrgastrechte leicht gemacht</span>
+</header>
+<nav>
+  <button class="nb active" onclick="showTab('uebersicht')" aria-label="Übersicht">&#128202; &#220;bersicht</button>
+  <button class="nb" onclick="showTab('erfassen')" aria-label="Neue Verspätung erfassen">&#43; Erfassen</button>
+  <button class="nb" onclick="showTab('screenshot')" aria-label="Screenshot aus DB-App hochladen">&#128247; Screenshot</button>
+  <button class="nb" onclick="showTab('verlauf')" aria-label="Verlauf aller Einträge">&#128203; Verlauf</button>
+  <button class="nb" onclick="showTab('anschreiben')" aria-label="Anschreiben generieren">&#128221; Anschreiben</button>
+  <button class="nb" onclick="showTab('tipps')" aria-label="Tipps und Rechtsinformationen">&#128161; Tipps &amp; Recht</button>
+  <button class="nb" onclick="showTab('profil')" aria-label="Mein Profil bearbeiten">&#128100; Profil</button>
+  <button class="nb" onclick="showTab('lizenz')" aria-label="Lizenz und Impressum">&#169; Lizenz</button>
+</nav>
+<main>
+
+<section id="uebersicht" class="sec active">
+  <div class="sg" id="sg"></div>
+  <div class="stit">Letzte Eintr&#228;ge</div>
+  <div id="re"></div>
+  <button class="btn btn-p btn-f" onclick="showTab('erfassen')" style="margin-top:.4rem">&#43; Neue Versp&#228;tung erfassen</button>
+</section>
+
+<section id="erfassen" class="sec">
+  <div id="transferBanner" style="display:none;background:rgba(16,185,129,.12);border:1px solid var(--green);border-radius:9px;padding:.65rem 1rem;font-size:.8rem;color:#6EE7B7;margin-bottom:.75rem;font-weight:600">
+    &#10004; Screenshot-Daten &#252;bernommen &#8212; bitte pr&#252;fen und erg&#228;nzen.
+  </div>
+  <div class="stit">Versp&#228;tung erfassen</div>
+  <div class="card">
+    <div class="fg">
+      <label>Ticket-Typ</label>
+      <div class="ttg">
+        <div class="ttc sel" onclick="selTT('dt2',this)">
+          <div class="ttc-name">D-Ticket 2. Kl.</div>
+          <div class="ttc-sub">63&#8239;&#8364;/Mo &#8226; 1,50&#8239;&#8364;/Fall</div>
+        </div>
+        <div class="ttc" onclick="selTT('dt1',this)">
+          <div class="ttc-name">D-Ticket 1. Kl. <span class="badge-1kl">1.KL</span></div>
+          <div class="ttc-sub">63&#8239;&#8364; + Upgrade &#8226; 2,25&#8239;&#8364;/Fall</div>
+        </div>
+        <div class="ttc" onclick="selTT('znv2',this)">
+          <div class="ttc-name">Zeitkarte NV 2. Kl.</div>
+          <div class="ttc-sub">Monatskarte &#8226; 1,50&#8239;&#8364;/Fall</div>
+        </div>
+        <div class="ttc" onclick="selTT('znv1',this)">
+          <div class="ttc-name">Zeitkarte NV 1. Kl. <span class="badge-1kl">1.KL</span></div>
+          <div class="ttc-sub">Monatskarte &#8226; 2,25&#8239;&#8364;/Fall</div>
+        </div>
+        <div class="ttc" onclick="selTT('zfv2',this)">
+          <div class="ttc-name">Zeitkarte FV 2. Kl.</div>
+          <div class="ttc-sub">IC/ICE-Abo &#8226; 5,00&#8239;&#8364;/Fall</div>
+        </div>
+        <div class="ttc" onclick="selTT('einzel',this)">
+          <div class="ttc-name">Einzelticket</div>
+          <div class="ttc-sub">25&#8239;% oder 50&#8239;% des Preises</div>
+        </div>
+      </div>
+      <div class="kl1-note" id="kl1n" style="display:none">
+        <strong>&#9733; 1. Klasse Upgrade</strong> &#8212;
+        Du darfst im 1.-Kl.-Wagen sitzen (nur Nahverkehr RE/RB/S-Bahn), hast aber
+        <strong>keinen garantierten Sitzplatz</strong> &#8212; kein Reservierungssystem im NV.
+        Vorteil: 1. Kl. ist deutlich leerer. H&#246;here Pauschale: 2,25&#8239;&#8364; statt 1,50&#8239;&#8364;.
+        Gilt <em>nicht</em> f&#252;r ICE / IC / EC.
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Zugnummer</label><input id="fz_" placeholder="z.B. ICE 571 oder S1"></div>
+      <div class="fg"><label>Datum</label><input type="date" id="fd_"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Planm&#228;&#223;. Abfahrt</label><input type="time" id="fzeit_" placeholder="08:12"></div>
+      <div class="fg" style="display:flex;align-items:flex-end"><div style="font-size:.72rem;color:var(--muted);padding-bottom:.65rem">&#8505; Bei S-Bahn/RE: Abfahrtszeit eintragen, damit der genaue Zug identifizierbar ist</div></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Von</label><input id="fv_" placeholder="Abfahrtsbahnhof"></div>
+      <div class="fg"><label>Nach</label><input id="fn_" placeholder="Ankunftsbahnhof"></div>
+    </div>
+    <div class="fg">
+      <label>Art des Problems</label>
+      <div class="rg">
+        <button class="rb sel" onclick="selArt('versp',this)">&#9201; Versp&#228;tung</button>
+        <button class="rb" onclick="selArt('ausfall',this)">&#10060; Ausfall</button>
+        <button class="rb" onclick="selArt('anschluss',this)">&#8635; Anschluss</button>
+      </div>
+    </div>
+    <div id="mg">
+      <div class="fg"><label>Versp&#228;tung am Ziel (Minuten)</label><input type="number" id="fm_" placeholder="z.B. 75" min="0" max="600" oninput="updE()"></div>
+    </div>
+    <div class="fg" id="prg">
+      <label>Ticketpreis (&#8364;) &#8212; nur bei Einzelticket</label>
+      <input type="number" id="fp_" placeholder="z.B. 49.90" min="0" step="0.01" oninput="updE()">
+    </div>
+    <div class="fg">
+      <label>Grund (h&#228;ufigste Ursachen)</label>
+      <select id="fgrund_" onchange="updGrund()">
+        <option value="">&#8211; Grund w&#228;hlen (optional) &#8211;</option>
+        <option value="Versp&#228;tung aus vorheriger Fahrt (Umlaufversp&#228;tung)">&#128260; Versp&#228;tung aus vorheriger Fahrt</option>
+        <option value="Weichenst&#246;rung">&#128268; Weichenst&#246;rung</option>
+        <option value="Stellwerkst&#246;rung">&#128268; Stellwerkst&#246;rung</option>
+        <option value="Technischer Defekt am Zug">&#128295; Technischer Defekt am Zug</option>
+        <option value="Kurzfristig erkranktes Personal">&#129298; Erkranktes Personal / Personalausfall</option>
+        <option value="Bauarbeiten / Langsamfahrstelle">&#128679; Bauarbeiten / Langsamfahrstelle</option>
+        <option value="Versp&#228;teter Gegenzug / Zugkreuzung">&#128650; Versp&#228;teter Gegenzug / Zugkreuzung</option>
+        <option value="Warten auf Anschlussreisende">&#9203; Warten auf Anschlussreisende</option>
+        <option value="Streik des Bahnpersonals (GDL/EVG)">&#9994; Streik GDL / EVG</option>
+        <option value="Sonstiges">&#128221; Sonstiges</option>
+      </select>
+    </div>
+    <div class="fg" id="grundHinweis" style="display:none"></div>
+    <div class="fg"><label>Notizen (optional)</label><textarea id="fno_" rows="2" placeholder="Zus&#228;tzliche Details, Referenznummer&#8230;"></textarea></div>
+    <div id="eb"></div>
+    <button class="btn btn-p btn-f" onclick="saveEntry()">Eintrag speichern &#8594;</button>
+  </div>
+</section>
+
+<section id="screenshot" class="sec">
+  <div class="stit">Screenshot aus DB-App erfassen</div>
+  <div class="card">
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:.85rem">Lade einen Screenshot der Versp&#228;tungs-Anzeige aus dem DB Navigator hoch. Die Texterkennung l&#228;uft lokal in deinem Browser.</p>
+    <div class="drop-zone" id="dz_" onclick="document.getElementById('imgI').click()">
+      <div style="font-size:2rem;margin-bottom:.4rem">&#128247;</div>
+      <div style="font-size:.85rem;font-weight:600;margin-bottom:.25rem">Screenshot ausw&#228;hlen</div>
+      <div style="font-size:.75rem">JPG oder PNG &#8226; Tippe hier oder ziehe Bild rein</div>
+    </div>
+    <input type="file" id="imgI" accept="image/*" onchange="loadImg(this)">
+    <div id="oSt" style="display:none">
+      <div class="ocr-prog">
+        <div id="oMsg" style="font-weight:600;font-size:.8rem">Lade Texterkennung&#8230;</div>
+        <div class="pb-wrap"><div class="pb" id="pb_" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div id="oEx" style="display:none">
+      <div style="font-size:.72rem;color:var(--muted);margin:.5rem 0 .2rem">Erkannter Text:</div>
+      <div class="ocr-out" id="oTxt"></div>
+    </div>
+    <div id="oRes" style="display:none">
+      <input type="hidden" id="oart_" value="versp">
+      <div id="oAusfallHint" style="display:none;background:rgba(232,0,28,.08);border:1px solid var(--red);border-radius:8px;padding:.6rem .85rem;font-size:.78rem;color:#FCA5A5;margin-bottom:.6rem">
+        &#10060; <strong>Halt entf&#228;llt / Ausfall erkannt</strong> &#8212; wird als Ausfall &#252;bernommen.
+      </div>
+
+      <!-- OCR-sicher: Von, Nach, Datum, Grund -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--green);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">&#10004; OCR erkannt &#8212; bitte pr&#252;fen</div>
+      <div class="fr">
+        <div class="fg"><label>Von</label><input id="ov_" placeholder="Nicht erkannt"></div>
+        <div class="fg"><label>Nach</label><input id="on_" placeholder="Nicht erkannt"></div>
+      </div>
+      <div class="fg" id="ogrundWrap" style="display:none">
+        <label>Erkannter Grund &#10004;</label>
+        <input id="ogrund_" readonly style="background:rgba(16,185,129,.08);border-color:var(--green);color:#6EE7B7;font-size:.82rem">
+      </div>
+
+      <!-- Manuell: Zugnummer, Datum, Zeit (OCR unzuverlässig) -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin:.75rem 0 .4rem">&#9998; Bitte manuell eintragen</div>
+      <div class="fr">
+        <div class="fg">
+          <label>Zugnummer <span style="color:var(--red)">*</span></label>
+          <input id="oz_" placeholder="z.B. S1, RE 8, ICE 571" style="border-color:var(--amber)">
+        </div>
+        <div class="fg">
+          <label>Versp&#228;tung (Min)</label>
+          <input type="number" id="om_" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="fr">
+        <div class="fg">
+          <label>Datum <span style="color:var(--red)">*</span></label>
+          <input id="od_txt" placeholder="TT.MM.JJJJ" style="border-color:var(--amber)" oninput="parseDateInput(this.value)">
+          <input type="hidden" id="od_">
+        </div>
+        <div class="fg">
+          <label>Abfahrtszeit (plan.) <span style="color:var(--red)">*</span></label>
+          <input id="ozeit_txt" placeholder="HH:MM z.B. 05:31" style="border-color:var(--amber)" oninput="parseTimeInput(this.value)">
+          <input type="hidden" id="ozeit_">
+        </div>
+      </div>
+
+      <button class="btn btn-p btn-f" onclick="transferToForm()" style="margin-top:.75rem;font-size:1rem;padding:.85rem">&#8594; In Erfassen &#252;bernehmen</button>
+    </div>
+  </div>
+  <div class="notice">&#8505;&#65039; OCR erkennt zuverl&#228;ssig: Bahnhofsnamen, Ausfall, Grund. Zugnummer, Datum und Uhrzeit bitte manuell eintragen &#8212; das dauert nur Sekunden.</div>
+</section>
+
+<section id="verlauf" class="sec">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.85rem">
+    <div class="stit" style="margin:0">Meine Fahrten</div>
+    <select id="fs_" style="width:auto;font-size:.75rem;padding:.35rem .65rem" onchange="rendH()">
+      <option value="all">Alle</option>
+      <option value="ausstehend">Ausstehend</option>
+      <option value="beantragt">Beantragt</option>
+      <option value="erstattet">Erstattet</option>
+    </select>
+  </div>
+  <div id="hl"></div>
+</section>
+
+<section id="anschreiben" class="sec">
+  <div class="stit">Anschreiben generieren</div>
+
+  <!-- Mode toggle -->
+  <div style="display:flex;gap:.4rem;margin-bottom:.9rem">
+    <button class="rb sel" id="modeA" onclick="setMode('einzel')" style="flex:none;padding:.45rem 1rem;font-size:.8rem">Einzelantrag</button>
+    <button class="rb" id="modeB" onclick="setMode('sammel')" style="flex:none;padding:.45rem 1rem;font-size:.8rem">&#128203; Sammelantrag (Zeitkarte / D-Ticket)</button>
+  </div>
+
+  <!-- Shared: name + IBAN (from profile, editable override) -->
+  <div class="card" id="profileOverrideCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase">Absender (aus Profil)</div>
+      <button class="btn btn-g" onclick="showTab('profil')" style="font-size:.72rem">&#9998; Profil bearbeiten</button>
+    </div>
+    <div id="profilePreview" style="font-size:.8rem;color:var(--muted);line-height:1.7"></div>
+    <div id="profileMissing" style="display:none" class="notice" style="margin:0">&#9888;&#65039; Profil noch nicht ausgef&#252;llt &#8212; <button class="btn btn-g" onclick="showTab('profil')" style="font-size:.78rem;color:var(--amber)">jetzt einrichten &#8594;</button></div>
+    <hr style="margin:.75rem 0">
+    <div class="fr">
+      <div class="fg"><label>Name (&#252;berschreiben)</label><input id="ln_" placeholder="Aus Profil" oninput="onLetterInput()"></div>
+      <div class="fg"><label>IBAN (&#252;berschreiben)</label><input id="li_" placeholder="Aus Profil" oninput="onLetterInput()"></div>
+    </div>
+  </div>
+
+  <!-- EINZELANTRAG -->
+  <div id="pEinzel">
+    <div class="card" style="margin-top:-.4rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <label style="margin:0;text-transform:uppercase;letter-spacing:.07em;font-size:.68rem;color:var(--muted);font-weight:700">Eintr&#228;ge ausw&#228;hlen</label>
+        <button class="btn btn-g" onclick="toggleAllEntries()" id="selAllBtn" style="font-size:.72rem">Alle</button>
+      </div>
+      <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:8px;padding:.6rem .85rem;font-size:.76rem;color:#93C5FD;margin-bottom:.65rem">
+        <strong>&#128161; Empfehlung: Alle F&#228;lle einreichen.</strong><br>
+        Es gibt keine Obergrenze bei der <em>Anzahl</em> der F&#228;lle &#8212; nur beim <em>Gesamtbetrag</em> (25&#8239;% des Ticketpreises). Auch Verspätungen ab 20&#8239;Min. k&#246;nnen gesammelt werden. Mehr F&#228;lle = st&#228;rkerer Nachweis. Die DB hat alle Verspätungen ohnehin elektronisch erfasst.
+      </div>
+      <div id="eEntryList"></div>
+    </div>
+
+    <div id="lo_" style="display:none"></div>
+  </div>
+
+  <!-- SAMMELANTRAG -->
+  <div id="pSammel" style="display:none">
+    <div class="card" style="margin-top:-.4rem">
+      <div class="fr">
+        <div class="fg">
+          <label>Monat</label>
+          <select id="sMonth" onchange="rendSammel()"><option value="">&#8211; w&#228;hlen &#8211;</option></select>
+        </div>
+        <div class="fg">
+          <label>Ticket-Typ</label>
+          <select id="sTT" onchange="rendSammel()">
+            <option value="dt2">D-Ticket 2. Kl. (63&#8239;&#8364;)</option>
+            <option value="dt1">D-Ticket 1. Kl. (63&#8239;&#8364; + Upgrade)</option>
+            <option value="znv2">Zeitkarte NV 2. Kl.</option>
+            <option value="znv1">Zeitkarte NV 1. Kl.</option>
+            <option value="zfv2">Zeitkarte FV 2. Kl.</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="sEntries" style="display:none">
+      <div class="stit" style="font-size:.82rem;margin-bottom:.5rem">F&#228;lle ausw&#228;hlen:</div>
+      <div id="sCaseList"></div>
+
+      <!-- running total -->
+      <div class="card" style="margin:.5rem 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+          <div>
+            <div style="font-size:.7rem;color:var(--muted);margin-bottom:.2rem">Ausgew&#228;hlte F&#228;lle</div>
+            <div style="font-family:var(--mono);font-weight:700;font-size:1.1rem" id="sSumLine">&#8212;</div>
+          </div>
+          <div id="sStatus" style="font-size:.78rem"></div>
+        </div>
+        <div style="margin-top:.6rem">
+          <div id="sProgressWrap" style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden">
+            <div id="sProgressBar" style="background:var(--green);height:6px;border-radius:4px;transition:width .3s;width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--muted);margin-top:.25rem">
+            <span>0</span><span id="sMaxLabel"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="sSammelOut" style="display:none">
+        <a href="https://www.bahn.de/service/informationen/fahrgastrechte/erstattung-zugantraege" target="_blank" class="db-btn">
+          <div><div>&#127760; DB-Erstattungsportal</div><div class="db-sub">bahn.de &#8226; Online-Sammelantrag stellen</div></div>
+          <span style="font-size:1.1rem">&#8594;</span>
+        </a>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+          <div class="stit" style="margin:0;font-size:.85rem">Sammelantrag (per Post)</div>
+          <button class="btn btn-s" id="cpBS" onclick="cpLetter('lpS_','cpBS')" style="font-size:.75rem;padding:.35rem .7rem">&#128203; Kopieren</button>
+        </div>
+        <div class="lp" id="lpS_"></div>
+        <div class="notice">Alle <strong>Ticketnachweise</strong> (D-Ticket-Abo-Beleg) und ggf. Verspätungsbescheinigungen beilegen. Frist: <strong>3 Monate</strong> ab dem letzten Fall.</div>
+      </div>
+    </div>
+
+    <div id="sEmpty" style="display:none" class="empty">
+      <div style="font-size:1.5rem">&#128203;</div>
+      <div style="font-size:.82rem;margin-top:.4rem">Keine Zeitkarten-Eintr&#228;ge f&#252;r diesen Monat.<br>Erfasse zuerst Versp&#228;tungen im Erfassen-Tab.</div>
+    </div>
+  </div>
+</section>
+
+<section id="tipps" class="sec">
+  <div class="info-card">
+    <div class="info-card-hdr">&#128196;&#160; Rechts-Infokarte &#8212; DB Fahrgastrechte (Stand Jan. 2026)</div>
+    <div class="info-table-wrap">
+    <table class="info-table">
+      <tr><th>Ticket-Typ</th><th>Versp&#228;tung</th><th>Erstattung</th><th>Hinweis</th></tr>
+      <tr>
+        <td rowspan="3" style="vertical-align:middle"><strong>Einzelticket</strong></td>
+        <td><span class="it-mono" style="color:var(--amber)">&ge;&#160;60&#160;Min</span></td>
+        <td><span class="it-mono" style="color:var(--amber)">25&#8239;%</span></td>
+        <td rowspan="3" style="font-size:.7rem;color:var(--muted)">Basis = Fahrpreis einfache Fahrt. Bei Hin+R&#252;ck: halber Preis als Basis. Min. 4&#8239;&#8364; Auszahlung.</td>
+      </tr>
+      <tr>
+        <td><span class="it-mono" style="color:var(--green)">&ge;&#160;120&#160;Min</span></td>
+        <td><span class="it-mono" style="color:var(--green)">50&#8239;%</span></td>
+      </tr>
+      <tr>
+        <td><span class="it-mono" style="color:var(--red)">Ausfall</span></td>
+        <td><span class="it-mono" style="color:var(--red)">100&#8239;%</span></td>
+      </tr>
+      <tr style="background:rgba(232,0,28,.03)">
+        <td><strong>D-Ticket 2.&#160;Kl.</strong><br><span style="font-size:.68rem;color:var(--muted)">63&#8239;&#8364;/Monat</span></td>
+        <td><span class="it-mono" style="color:var(--amber)">&ge;&#160;60&#160;Min</span><br><span style="font-size:.66rem;color:var(--muted)">sammelbar ab 20&#160;Min</span></td>
+        <td><span class="it-mono" style="color:var(--amber)">1,50&#8239;&#8364;</span><br><span style="font-size:.66rem;color:var(--muted)">max.&#160;15,75&#8239;&#8364;/Mo</span></td>
+        <td style="font-size:.7rem;color:var(--muted)">Mind. 3&#160;F&#228;lle f&#252;r Auszahlung. Kein Fernverkehr.</td>
+      </tr>
+      <tr style="background:rgba(167,139,250,.04)">
+        <td><strong>D-Ticket 1.&#160;Kl. <span class="badge-1kl">1.KL</span></strong><br><span style="font-size:.68rem;color:var(--muted)">63&#8239;&#8364; + Upgrade</span></td>
+        <td><span class="it-mono" style="color:var(--purple)">&ge;&#160;60&#160;Min</span><br><span style="font-size:.66rem;color:var(--muted)">sammelbar ab 20&#160;Min</span></td>
+        <td><span class="it-mono" style="color:var(--purple)">2,25&#8239;&#8364;</span><br><span style="font-size:.66rem;color:var(--muted)">max.&#160;15,75&#8239;&#8364;/Mo</span></td>
+        <td style="font-size:.7rem;color:var(--muted)">Mind. 2&#160;F&#228;lle. Kein Sitzplatz-Garantie. Kein ICE/IC.</td>
+      </tr>
+      <tr>
+        <td><strong>Zeitkarte NV</strong><br><span style="font-size:.68rem;color:var(--muted)">RE/RB/S-Bahn-Abo</span></td>
+        <td><span class="it-mono" style="color:var(--amber)">&ge;&#160;60&#160;Min</span></td>
+        <td><span class="it-mono">1,50 / 2,25&#8239;&#8364;</span><br><span style="font-size:.66rem;color:var(--muted)">2.&#160;Kl. / 1.&#160;Kl.</span></td>
+        <td style="font-size:.7rem;color:var(--muted)">Max.&#160;25&#8239;% des Kartenwerts. Verspätungen ab 20&#160;Min sammelbar.</td>
+      </tr>
+      <tr>
+        <td><strong>BahnCard&#160;100</strong><br><span style="font-size:.68rem;color:var(--muted)">Jahresticket</span></td>
+        <td><span class="it-mono" style="color:var(--green)">&ge;&#160;60&#160;Min</span></td>
+        <td><span class="it-mono" style="color:var(--green)">10 / 15&#8239;&#8364;</span><br><span style="font-size:.66rem;color:var(--muted)">2.&#160;Kl. / 1.&#160;Kl.</span></td>
+        <td style="font-size:.7rem;color:var(--muted)">Max. 25&#8239;% des BC100-Preises. Sofortige Auszahlung.</td>
+      </tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="kl1-note">
+    <strong>&#9733; 1. Klasse Upgrade beim D-Ticket</strong><br>
+    &#10003; Zugang zum 1.&#160;Kl.-Wagen im Nahverkehr (RE, RB, S-Bahn)<br>
+    &#10003; 50&#8239;% h&#246;here Versp&#228;tungspauschale (2,25&#8239;&#8364; statt 1,50&#8239;&#8364;)<br>
+    &#10003; De facto mehr Sitzpl&#228;tze &#8212; 1.&#160;Klasse ist deutlich leerer<br>
+    &#10007; <strong>Kein garantierter Sitzplatz</strong> &#8212; keine Reservierung im NV<br>
+    &#10007; Kein Lounge-Zugang<br>
+    &#10007; Gilt nicht f&#252;r ICE / IC / EC (Ausnahme: einige Regionalbahnen in BW)
+  </div>
+
+  <div class="stit">Ausnahmen &amp; Fallstricke</div>
+  <div class="tip"><span>&#9889;</span><span>Seit Juni&#160;2023: Kein Anspruch bei <strong>h&#246;herer Gewalt</strong> &#8212; Extremwetter, Sabotage, Personen im Gleis.</span></div>
+  <div class="tip"><span>&#10003;</span><span><strong>Streik</strong> der Bahnmitarbeiter gilt <em>nicht</em> als h&#246;here Gewalt &#8212; Anspruch bleibt!</span></div>
+  <div class="tip"><span>&#10003;</span><span>Marode Schienen / defekte Weichen &#8212; Anspruch bleibt (Verantwortung der Bahn).</span></div>
+  <div class="tip"><span>&#128197;</span><span>Frist: <strong>3 Monate</strong> nach der Fahrt. D-Ticket/Zeitkarte: Verspätungen ab 20&#160;Min sammeln.</span></div>
+  <div class="tip"><span>&#128228;</span><span>Immer einreichen &#8212; auch bei h&#246;herer Gewalt! DB gew&#228;hrt oft <strong>Kulanzgutscheine</strong>.</span></div>
+  <div class="tip"><span>&#128652;</span><span>Bei Ausfall nachts: Taxi bis <strong>80&#8239;&#8364;</strong> erstattungsf&#228;hig (wenn kein DB-Ersatz angeboten).</span></div>
+
+  <!-- STEUER-INFO -->
+  <div class="stit" style="margin-top:1.25rem">&#128200; Steuer &amp; Erstattung</div>
+
+  <div class="info-card" style="margin-bottom:.85rem">
+    <div class="info-card-hdr" style="cursor:pointer" onclick="toggleSteuer()">
+      &#128204; Steuerliche Relevanz von Fahrgastrechte-Erstattungen &#160;<span id="steuerToggle" style="font-weight:400;font-size:.8rem;opacity:.7">&#9660; Details anzeigen</span>
+    </div>
+    <div id="steuerContent" style="display:none;padding:1rem 1.1rem">
+
+      <div style="font-size:.8rem;color:var(--muted);margin-bottom:.85rem">
+        Erhaltene Erstattungen von der DB m&#252;ssen in der Steuererkl&#228;rung ber&#252;cksichtigt werden, wenn du Fahrtkosten absetzt.
+      </div>
+
+      <!-- Grundregel -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">Grundregel</div>
+      <div style="font-size:.82rem;margin-bottom:.85rem;line-height:1.7">
+        Erstattungen <strong>mindern den absetzbaren Betrag</strong>. Wer die Entfernungspauschale (Pendlerpauschale) oder das D-Ticket als Werbungskosten ansetzt, muss erhaltene DB-Erstattungen gegenrechnen.
+      </div>
+
+      <!-- Regionale Upgrades -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin:.85rem 0 .4rem">1. Klasse Upgrade: Regionale Preise &amp; Erstattungsbetr&#228;ge (Stand 2026)</div>
+      <div class="info-table-wrap">
+        <table class="info-table" style="min-width:520px;margin-bottom:.6rem">
+          <tr>
+            <th>Region</th>
+            <th>Preis/Mo.</th>
+            <th>Pauschale/Fall</th>
+            <th>Max/Mo.</th>
+            <th>Max/Jahr</th>
+            <th>F&#228;lle bis Max</th>
+          </tr>
+          <tr style="background:rgba(167,139,250,.04)">
+            <td><strong>BW</strong> (VVS)</td>
+            <td style="font-family:var(--mono);color:var(--purple)">63&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">2,25&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">15,75&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--green);font-weight:700">189&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">7/Mo.</td>
+          </tr>
+          <tr>
+            <td><strong>NRW</strong></td>
+            <td style="font-family:var(--mono)">69&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">2,25&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">17,25&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--green);font-weight:700">207&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">7-8/Mo.</td>
+          </tr>
+          <tr>
+            <td><strong>Hamburg</strong> (HVV)</td>
+            <td style="font-family:var(--mono)">54,30&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">2,25&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">13,58&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--green);font-weight:700">162,90&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">6/Mo.</td>
+          </tr>
+          <tr>
+            <td><strong>Hannover</strong> (ÜSTRA)</td>
+            <td style="font-family:var(--mono)">77,60&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">2,25&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">19,40&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--green);font-weight:700">232,80&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">8/Mo.</td>
+          </tr>
+          <tr>
+            <td><strong>Andere</strong></td>
+            <td style="color:var(--muted);font-size:.75rem" colspan="5">Kein Monatsupgrade &#8212; nur Einzelfahrt-Upgrade via DB (kein Pauschalen-System)</td>
+          </tr>
+        </table>
+      </div>
+      <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:8px;padding:.65rem .9rem;font-size:.78rem;color:#93C5FD;margin-bottom:.85rem">
+        &#8505;&#65039; Die <strong>2,25&#8239;&#8364; Pauschale pro Fall</strong> ist bundesweit einheitlich gesetzlich festgelegt (&sect;&nbsp;11 EVO). Die <strong>Jahresobergrenze</strong> h&#228;ngt von deinem regionalen Upgrade-Preis ab (25&#8239;%). Pendler mit vielen Versp&#228;tungen profitieren am meisten in Hannover &#8212; dort liegt das Maximum am h&#246;chsten.
+      </div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.85rem">
+        Quelle: Verbund-Websites und &sect;&nbsp;11 EVO, Stand Januar 2026.
+      </div>
+
+      <!-- Maximaler Jahresbetrag -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">Maximaler Erstattungsbetrag pro Jahr</div>
+      <div class="info-table-wrap">
+        <table class="info-table" style="min-width:380px;margin-bottom:.85rem">
+          <tr>
+            <th>Ticket</th>
+            <th>Monatspreis</th>
+            <th>Max./Monat (25&#8239;%)</th>
+            <th>Max./Jahr</th>
+          </tr>
+          <tr>
+            <td>D-Ticket 2.&#160;Kl.</td>
+            <td style="font-family:var(--mono)">63&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">15,75&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">189&#8239;&#8364;</td>
+          </tr>
+          <tr>
+            <td>1.&#160;Kl. Upgrade (BW/VVS)</td>
+            <td style="font-family:var(--mono)">63&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">15,75&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--amber)">189&#8239;&#8364;</td>
+          </tr>
+          <tr style="background:rgba(16,185,129,.05)">
+            <td><strong>Gesamt (beide Tickets)</strong></td>
+            <td style="font-family:var(--mono)">126&#8239;&#8364;</td>
+            <td style="font-family:var(--mono)">31,50&#8239;&#8364;</td>
+            <td style="font-family:var(--mono);color:var(--green);font-weight:700">378&#8239;&#8364;</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Tabelle Grenzsteuersatz -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">Beispiel: 275&#8239;&#8364; Erstattung pro Jahr</div>
+      <div class="info-table-wrap">
+        <table class="info-table" style="min-width:340px">
+          <tr>
+            <th>Grenzsteuersatz</th>
+            <th>Steuerliche Mehrbelastung</th>
+            <th>Netto bleibt dir</th>
+          </tr>
+          <tr>
+            <td>30&#8239;%</td>
+            <td style="color:var(--amber)">ca. 82&#8239;&#8364; mehr Steuer</td>
+            <td style="color:var(--green);font-weight:600">&#8776; 193&#8239;&#8364;</td>
+          </tr>
+          <tr>
+            <td>35&#8239;%</td>
+            <td style="color:var(--amber)">ca. 96&#8239;&#8364; mehr Steuer</td>
+            <td style="color:var(--green);font-weight:600">&#8776; 179&#8239;&#8364;</td>
+          </tr>
+          <tr>
+            <td>42&#8239;% (Spitze)</td>
+            <td style="color:var(--amber)">ca. 115&#8239;&#8364; mehr Steuer</td>
+            <td style="color:var(--green);font-weight:600">&#8776; 160&#8239;&#8364;</td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.65rem .9rem;font-size:.8rem;color:#6EE7B7;margin:.85rem 0">
+        &#10004; <strong>Fazit:</strong> Selbst nach Steuer bleiben dir 160&#8211;193&#8239;&#8364; die du ohne Fahrgastrechte nie gesehen h&#228;ttest.
+      </div>
+
+      <!-- Szenarien -->
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem;margin-top:.75rem">Wer ist betroffen?</div>
+
+      <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.8rem">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem">
+          <div style="font-weight:700;margin-bottom:.2rem">&#128188; Arbeitnehmer mit Pendlerpauschale</div>
+          <div style="color:var(--muted)">Erstattungen mindern die absetzbaren Fahrtkosten. Bitte in der Steuererkl&#228;rung (Anlage N) angeben.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem">
+          <div style="font-weight:700;margin-bottom:.2rem">&#128196; Selbst&#228;ndige / Freiberufler</div>
+          <div style="color:var(--muted)">Erstattungen sind als Betriebseinnahme zu verbuchen. Gegenrechnung mit Fahrtkosten als Betriebsausgaben.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem">
+          <div style="font-weight:700;margin-bottom:.2rem">&#127970; AG zahlt das D-Ticket</div>
+          <div style="color:var(--muted)">F&#252;r dich pers&#246;nlich keine steuerliche Auswirkung &#8212; betrifft nur den Arbeitgeber.</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem">
+          <div style="font-weight:700;margin-bottom:.2rem">&#10003; Keine Steuererkl&#228;rung / keine Werbungskosten</div>
+          <div style="color:var(--muted)">Keine steuerliche Auswirkung &#8212; du beh&#228;ltst die volle Erstattung.</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:8px;padding:.65rem .9rem;font-size:.78rem;color:#93C5FD;margin-top:.85rem">
+        &#128161; Tipp: Nutze den Jahresexport aus BahnRecht als Nachweis f&#252;r deinen Steuerberater &#8212; er zeigt genau welche Betr&#228;ge in welchem Steuerjahr erstattet wurden.
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top:.5rem;display:flex;flex-direction:column;gap:.5rem">
+    <a href="https://www.bahn.de/service/informationen/fahrgastrechte" target="_blank" class="btn btn-s btn-f">&#127760; Offizielle DB Fahrgastrechte-Seite</a>
+    <a href="https://www.bahn.de/service/informationen/fahrgastrechte/erstattung-zugantraege" target="_blank" class="btn btn-p btn-f">&#128229; Zum Erstattungsportal</a>
+  </div>
+</section>
+
+<section id="profil" class="sec">
+  <div class="stit">Mein Profil</div>
+  <div class="card">
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:.9rem">Deine Daten werden lokal gespeichert und automatisch in alle Anschreiben &#252;bernommen.</div>
+    <div class="fr">
+      <div class="fg"><label>Vorname</label><input id="pVorname" placeholder="Max" oninput="saveProfile()"></div>
+      <div class="fg"><label>Nachname</label><input id="pNachname" placeholder="Mustermann" oninput="saveProfile()"></div>
+    </div>
+    <div class="fg"><label>Stra&#223;e und Hausnummer</label><input id="pStrasse" placeholder="Musterstra&#223;e 42" oninput="saveProfile()"></div>
+    <div class="fr">
+      <div class="fg"><label>PLZ</label><input id="pPlz" placeholder="70173" maxlength="5" oninput="saveProfile()"></div>
+      <div class="fg"><label>Stadt</label><input id="pStadt" placeholder="Stuttgart" oninput="saveProfile()"></div>
+    </div>
+    <div class="fg"><label>E-Mail (optional)</label><input id="pEmail" type="email" placeholder="max@beispiel.de" oninput="saveProfile()"></div>
+    <div class="fg"><label>Telefon (optional)</label><input id="pTel" type="tel" placeholder="+49 711 123456" oninput="saveProfile()"></div>
+    <hr>
+    <div class="fg"><label>IBAN <span style="font-size:.65rem;color:var(--amber);font-weight:400;text-transform:none;letter-spacing:0">⚠️ Unverschlüsselt gespeichert — kein geteiltes Gerät</span></label><input id="pIban" placeholder="DE89 3704 0044 0532 0130 00" oninput="saveProfile()"></div>
+    <div class="fg"><label>Kontoinhaber (falls abweichend)</label><input id="pKonto" placeholder="Leer lassen wenn identisch mit Name" oninput="saveProfile()"></div>
+    <hr>
+    <div class="fr">
+      <div class="fg">
+        <label>Ticket-ID / Auftrags-Nr. (D-Ticket oder Abo)</label>
+        <input id="pTicketId" placeholder="z.B. DE-1234-5678-9012" oninput="saveProfile()">
+      </div>
+      <div class="fg">
+        <label>1. Klasse Upgrade-Nr. (optional)</label>
+        <input id="pUpgradeId" placeholder="z.B. Auftrags-Nr. Upgrade" oninput="saveProfile()">
+      </div>
+    </div>
+    <div style="font-size:.7rem;color:var(--muted);margin-top:-.4rem;margin-bottom:.8rem">Werden automatisch in Anschreiben und Sammelantr&#228;ge &#252;bernommen.</div>
+  </div>
+  <div id="profileSaved" style="display:none;background:rgba(16,185,129,.1);border:1px solid var(--green);border-radius:9px;padding:.6rem 1rem;font-size:.78rem;color:#6EE7B7;margin-bottom:.75rem">
+    &#10004; Profil gespeichert
+  </div>
+  <button onclick="document.getElementById('datenschutzModal').classList.add('open')" style="width:100%;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:9px;padding:.65rem 1rem;font-size:.78rem;color:#93C5FD;margin-bottom:.6rem;cursor:pointer;text-align:left;font-family:var(--font)">
+    &#128274; Deine Daten verlassen nie dein Ger&#228;t &#8212; tippe hier f&#252;r Details zur Datenspeicherung &#8250;
+  </button>
+  <div style="display:flex;gap:.5rem">
+    <button class="btn btn-s" style="flex:1" onclick="document.getElementById('exportModal').classList.add('open')">&#128229; Backup exportieren</button>
+    <button class="btn btn-s" style="flex:1" onclick="document.getElementById('exportModal').classList.add('open');setTimeout(function(){document.getElementById('importFile').click();},300)">&#128193; Backup importieren</button>
+  </div>
+</section>
+
+<section id="lizenz" class="sec">
+  <div class="stit">&#169; Lizenz &amp; Impressum</div>
+
+  <!-- URHEBER -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+      <div style="background:var(--red);color:#fff;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;flex-shrink:0">BR</div>
+      <div>
+        <div style="font-size:1rem;font-weight:700">BahnRecht</div>
+        <div style="font-size:.78rem;color:var(--muted)">Fahrgastrechte leicht gemacht</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.15rem">&#169; 2026 TN 3D-OBJEKTE</div>
+      </div>
+    </div>
+    <div style="font-size:.8rem;color:var(--muted);line-height:1.75">
+      BahnRecht ist ein kostenloses Werkzeug f&#252;r Bahnreisende in Deutschland,
+      das beim Geltendmachen von Fahrgastrechten unterst&#252;tzt. Die App l&#228;uft
+      vollst&#228;ndig lokal auf deinem Ger&#228;t &#8212; ohne Server, ohne Tracking.
+    </div>
+  </div>
+
+  <!-- LIZENZ -->
+  <div class="stit">Creative Commons BY-NC-ND 4.0</div>
+  <div class="info-card">
+    <div class="info-card-hdr">&#128216; Lizenzbestimmungen</div>
+    <div style="padding:1rem 1.1rem">
+
+      <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0">&#10003;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--green)">Kostenlose Nutzung</strong> durch alle Endnutzer erlaubt</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0">&#10003;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--green)">Teilen</strong> des Links zur offiziellen Ver&#246;ffentlichung erlaubt</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--green);font-size:1rem;flex-shrink:0">&#10003;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--green)">Presse &amp; Berichterstattung</strong> &#252;ber BahnRecht erlaubt</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(232,0,28,.06);border:1px solid rgba(232,0,28,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--red);font-size:1rem;flex-shrink:0">&#10007;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--red)">Kein kommerzieller Einsatz</strong> ohne ausdr&#252;ckliche schriftliche Genehmigung des Urhebers</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(232,0,28,.06);border:1px solid rgba(232,0,28,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--red);font-size:1rem;flex-shrink:0">&#10007;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--red)">Keine ver&#228;nderten Versionen</strong> ver&#246;ffentlichen oder weitergeben</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(232,0,28,.06);border:1px solid rgba(232,0,28,.2);border-radius:8px;padding:.65rem .9rem">
+          <span style="color:var(--red);font-size:1rem;flex-shrink:0">&#10007;</span>
+          <div style="font-size:.8rem"><strong style="color:var(--red)">Keine Umbenennung</strong> oder Ver&#246;ffentlichung unter eigenem Namen</div>
+        </div>
+      </div>
+
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.75rem">
+        Der Name <strong>&#8222;BahnRecht&#8220;</strong> und das BR-Logo sind urheberrechtlich gesch&#252;tzt.
+        Eine Markenanmeldung beim Deutschen Patent- und Markenamt (DPMA) ist beabsichtigt.
+      </div>
+
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.de" target="_blank" class="btn btn-s" style="font-size:.75rem">
+          &#127760; Vollst&#228;ndiger Lizenztext
+        </a>
+        <a href="https://www.dpma.de" target="_blank" class="btn btn-s" style="font-size:.75rem">
+          &#127760; DPMA Markenanmeldung
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECHTLICHES -->
+  <div class="stit">Rechtliche Hinweise</div>
+  <div class="card" style="font-size:.8rem;color:var(--muted);line-height:1.8">
+    <div style="margin-bottom:.6rem">
+      <strong style="color:var(--text)">Haftungsausschluss</strong><br>
+      BahnRecht unterst&#252;tzt bei der Erstellung von Anschreiben auf Basis der
+      gesetzlichen Fahrgastrechte. Die generierten Texte ersetzen keine Rechtsberatung.
+      F&#252;r die Richtigkeit und Vollst&#228;ndigkeit der eingegebenen Daten ist der
+      Nutzer selbst verantwortlich.
+    </div>
+    <div style="margin-bottom:.6rem">
+      <strong style="color:var(--text)">Keine Verbindung zur Deutschen Bahn</strong><br>
+      BahnRecht ist ein unabh&#228;ngiges Werkzeug und steht in keinerlei
+      Verbindung zur Deutschen Bahn AG oder deren Tochtergesellschaften.
+    </div>
+    <div>
+      <strong style="color:var(--text)">Gesetzliche Grundlage</strong><br>
+      Die Erstattungsanspr&#252;che basieren auf &#167;&nbsp;17 Fahrgastrechte-VO
+      (EU) 2021/782 sowie &#167;&nbsp;11 EVO (Eisenbahn-Verkehrs-Ordnung).
+    </div>
+  </div>
+
+  <!-- KONTAKT -->
+  <div class="stit">Kontakt &amp; Lizenzanfragen</div>
+  <div class="card">
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">
+      F&#252;r kommerzielle Lizenzanfragen, Kooperationen oder Pressekontakt:
+    </div>
+    <div style="font-size:.88rem;font-weight:600;color:var(--text)">
+      TN 3D-OBJEKTE<br>
+      <span style="color:var(--muted);font-weight:400;font-size:.8rem">github.com/TN3D-Objekte</span>
+    </div>
+  </div>
+
+  <!-- VERSION -->
+  <div style="text-align:center;padding:.75rem;font-size:.68rem;color:var(--muted)">
+    BahnRecht Version 2.0 &#8212; Stand Januar 2026<br>
+    Rechtliche Grundlage: Stand Januar 2026 &#8212; &#167;&nbsp;17 FahrgastrechteVO (EU) 2021/782
+  </div>
+
+</section>
+
+<div style="text-align:center;padding:1.5rem 1rem .75rem;font-size:.68rem;color:var(--muted);line-height:1.8;border-top:1px solid var(--border);margin-top:1rem">
+  <div style="margin-bottom:.3rem">&#169; 2026 BahnRecht &#8212; TN 3D-OBJEKTE</div>
+  <div>
+    <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.de" target="_blank"
+       style="color:var(--muted);text-decoration:none;border-bottom:1px solid var(--border)">
+      CC BY-NC-ND 4.0
+    </a>
+    &#160;&#8226;&#160; Kostenlos &amp; privat &#8226; Alle Daten bleiben auf deinem Ger&#228;t
+  </div>
+</div>
+
+</main>
+
+<!-- DATENSCHUTZ-DIALOG -->
+<div class="mo" id="datenschutzModal">
+  <div class="md" style="max-height:85vh;overflow-y:auto">
+    <div class="mh"><span>&#128274; Datenspeicherung &amp; Datenschutz</span><button class="btn btn-g" onclick="document.getElementById('datenschutzModal').classList.remove('open')">&#10005;</button></div>
+
+    <div style="font-size:.85rem;line-height:1.75;color:var(--text)">
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem">Wo werden deine Daten gespeichert?</div>
+      <p style="margin-bottom:.75rem">Alle Daten &#8212; deine Eintr&#228;ge, Profildaten und IBAN &#8212; werden ausschlie&#223;lich im <strong>localStorage</strong> deines Browsers gespeichert. Das ist eine lokale Datenbank direkt auf deinem Ger&#228;t, vergleichbar mit einem Cookie.</p>
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--green);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">&#10004; Was das Ger&#228;t nie verl&#228;sst</div>
+      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:.75rem .9rem;font-size:.8rem;margin-bottom:.75rem">
+        Deine Eintr&#228;ge, Profildaten, IBAN und Ticket-ID werden zu keinem Zeitpunkt &#252;bertragen. Es gibt keinen Server, keine Cloud, keine Datenbank au&#223;erhalb deines Ger&#228;ts.
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">&#9888;&#65039; Was einmalig aus dem Internet geladen wird</div>
+      <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:.75rem .9rem;font-size:.8rem;margin-bottom:.75rem">
+        <strong>Schriftarten</strong> (Google Fonts) &#8212; nur f&#252;r die Darstellung.<br>
+        <strong>Tesseract.js</strong> &#8212; die OCR-Bibliothek f&#252;r den Screenshot-Tab. Wird einmalig vom CDN geladen. Das Bild selbst wird dabei <em>nicht</em> &#252;bertragen &#8212; die Erkennung l&#228;uft vollst&#228;ndig lokal in deinem Browser.<br>
+        <strong>DB-Portal-Link</strong> &#8212; nur wenn du aktiv darauf tippst.
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--red);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">&#9888;&#65039; Wichtig: Wann Daten verloren gehen</div>
+      <div style="background:rgba(232,0,28,.06);border:1px solid rgba(232,0,28,.18);border-radius:8px;padding:.75rem .9rem;font-size:.8rem;margin-bottom:.75rem">
+        &#8226; Browser-Cache oder -Daten werden gel&#246;scht<br>
+        &#8226; Du &#246;ffnest die Datei in einem anderen Browser<br>
+        &#8226; Du verwendest den Inkognito-Modus (kein persistenter localStorage)<br><br>
+        <strong>Empfehlung:</strong> Nutze den Export-Button regelm&#228;&#223;ig als Backup.
+      </div>
+
+      <div style="font-size:.72rem;font-weight:700;color:var(--blue);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem">&#128196; Welche Schl&#252;ssel im localStorage genutzt werden</div>
+      <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.18);border-radius:8px;padding:.75rem .9rem;font-size:.78rem;font-family:var(--mono)">
+        br3 &#8212; alle Eintr&#228;ge (Fahrten)<br>
+        br_profil &#8212; Profildaten (Name, Adresse, IBAN)
+      </div>
+    </div>
+
+    <button class="btn btn-p btn-f" onclick="document.getElementById('datenschutzModal').classList.remove('open')" style="margin-top:1rem">Verstanden</button>
+  </div>
+</div>
+
+<!-- EXPORT/IMPORT MODAL -->
+<div class="mo" id="exportModal">
+  <div class="md" style="max-height:85vh;overflow-y:auto">
+    <div class="mh"><span>&#128229; Export &amp; Import</span><button class="btn btn-g" onclick="document.getElementById('exportModal').classList.remove('open')">&#10005;</button></div>
+
+    <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem">Backup exportieren</div>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:.65rem">Speichert alle Eintr&#228;ge und Profildaten als JSON-Datei auf deinem Ger&#228;t. Damit bist du unabh&#228;ngig vom Browser-Cache.</p>
+    <button class="btn btn-p btn-f" onclick="exportData()" style="margin-bottom:1.1rem">&#128229; Backup jetzt exportieren</button>
+
+    <hr>
+    <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin:.85rem 0 .5rem">Backup importieren</div>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:.65rem">W&#228;hle eine zuvor exportierte BahnRecht-JSON-Datei. Bestehende Eintr&#228;ge werden mit den importierten zusammengef&#252;hrt (keine Duplikate).</p>
+    <label style="display:block;background:var(--surface);border:2px dashed var(--border);border-radius:9px;padding:1rem;text-align:center;cursor:pointer;font-size:.83rem;color:var(--muted);margin-bottom:.5rem" id="importDropLabel">
+      &#128193; JSON-Datei ausw&#228;hlen
+      <input type="file" accept=".json" id="importFile" style="display:none" onchange="importData(this)">
+    </label>
+    <div id="importStatus" style="display:none;font-size:.78rem;padding:.5rem .75rem;border-radius:8px;margin-bottom:.5rem"></div>
+  </div>
+</div>
+
+
+<div class="mo" id="em">
+  <div class="md" style="max-height:90vh;overflow-y:auto">
+    <div class="mh"><span>&#9998; Eintrag bearbeiten</span><button class="btn btn-g" onclick="clEM()">&#10005;</button></div>
+    <div class="fr">
+      <div class="fg"><label>Zugnummer</label><input id="ez_" placeholder="z.B. S1 oder ICE 571"></div>
+      <div class="fg"><label>Datum</label><input type="date" id="ed_"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Planm. Abfahrt</label><input type="time" id="ezeit_"></div>
+      <div class="fg"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Von</label><input id="ev_"></div>
+      <div class="fg"><label>Nach</label><input id="en_"></div>
+    </div>
+    <div class="fg">
+      <label>Versp&#228;tung am Ziel (Min)</label>
+      <input type="number" id="emin_" min="0" max="600">
+    </div>
+    <div class="fg">
+      <label>Ticketpreis (&#8364;) &#8212; nur Einzelticket</label>
+      <input type="number" id="epreis_" min="0" step="0.01">
+    </div>
+    <div class="fg"><label>Grund</label>
+      <select id="egrund_">
+        <option value="">&#8211; Grund w&#228;hlen &#8211;</option>
+        <option>Versp&#228;tung aus vorheriger Fahrt (Umlaufversp&#228;tung)</option>
+        <option>Weichenst&#246;rung</option>
+        <option>Stellwerkst&#246;rung</option>
+        <option>Technischer Defekt am Zug</option>
+        <option>Kurzfristig erkranktes Personal</option>
+        <option>Bauarbeiten / Langsamfahrstelle</option>
+        <option>Versp&#228;teter Gegenzug / Zugkreuzung</option>
+        <option>Warten auf Anschlussreisende</option>
+        <option>Streik des Bahnpersonals (GDL/EVG)</option>
+        <option>Sonstiges</option>
+      </select>
+    </div>
+    <div class="fg"><label>Notizen</label><textarea id="enot_" rows="2"></textarea></div>
+    <div style="display:flex;gap:.6rem;margin-top:.4rem">
+      <button class="btn btn-s" style="flex:1" onclick="clEM()">Abbrechen</button>
+      <button class="btn btn-p" style="flex:1" onclick="cfEdit()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STORAGE mit Versionierung =====
+var DB_VERSION = 1;
+
+// iOS-sicherer localStorage-Wrapper
+// Safari blockiert localStorage bei file:// — dann nutzen wir RAM-Speicher
+var _memStore = {};
+var _lsAvail = (function(){
+  try{ localStorage.setItem("_t","1"); localStorage.removeItem("_t"); return true; }
+  catch(e){ return false; }
+})();
+function lsGet(k){ try{ return _lsAvail ? localStorage.getItem(k) : (_memStore[k]||null); }catch(e){return _memStore[k]||null;} }
+function lsSet(k,v){ try{ if(_lsAvail){localStorage.setItem(k,v);} _memStore[k]=v; }catch(e){_memStore[k]=v;} }
+
+function migrateData(){
+  try{
+    var old = lsGet("br3");
+    if(old && !lsGet("br_v1_entries")){
+      var entries = JSON.parse(old);
+      lsSet("br_v1_entries", JSON.stringify(entries));
+      lsSet("br_v1_version", DB_VERSION.toString());
+    }
+    var oldProfil = lsGet("br_profil");
+    if(oldProfil && !lsGet("br_v1_profil")){
+      lsSet("br_v1_profil", oldProfil);
+    }
+  }catch(e){}
+}
+
+function gE(){
+  try{
+    var v1 = lsGet("br_v1_entries");
+    if(v1) return JSON.parse(v1)||[];
+    return JSON.parse(lsGet("br3")||"[]");
+  }catch(e){return [];}
+}
+function sE(e){
+  try{
+    lsSet("br_v1_entries", JSON.stringify(e));
+    lsSet("br_v1_version", DB_VERSION.toString());
+    lsSet("br3", JSON.stringify(e));
+  }catch(err){}
+}
+function getProfile(){
+  try{
+    var v1 = lsGet("br_v1_profil");
+    if(v1) return JSON.parse(v1)||{};
+    return JSON.parse(lsGet("br_profil")||"{}");
+  }catch(e){return {};}
+}
+function _saveProfileData(p){
+  localStorage.setItem("br_v1_profil", JSON.stringify(p));
+  localStorage.setItem("br_profil", JSON.stringify(p));
+}
+var TT={
+  dt2:     {label:"D-Ticket 2. Kl.",  p:1.50,isDT:true, usePct:false,bv:63,mp:25,kl1:false},
+  dt1:     {label:"D-Ticket 1. Kl.",  p:2.25,isDT:true, usePct:false,bv:126,mp:25,kl1:true},
+  znv2:    {label:"Zeitkarte NV 2.Kl",p:1.50,isDT:false,usePct:false,kl1:false},
+  znv1:    {label:"Zeitkarte NV 1.Kl",p:2.25,isDT:false,usePct:false,kl1:true},
+  zfv2:    {label:"Zeitkarte FV 2.Kl",p:5.00,isDT:false,usePct:false,kl1:false},
+  einzel:  {label:"Einzelticket",     p:0,   isDT:false,usePct:true, kl1:false}
+};
+var curTT="dt2",curArt="versp";
+
+function selTT(t,el){
+  curTT=t;
+  document.querySelectorAll(".ttc").forEach(function(c){c.classList.remove("sel");});
+  el.classList.add("sel");
+  document.getElementById("kl1n").style.display=TT[t].kl1?"block":"none";
+  document.getElementById("prg").style.display=TT[t].usePct?"block":"none";
+  updE();
+}
+
+function showTab(t){
+  document.querySelectorAll(".sec").forEach(function(s){s.classList.remove("active");});
+  document.querySelectorAll(".nb").forEach(function(b){b.classList.remove("active");});
+  document.getElementById(t).classList.add("active");
+  document.querySelectorAll(".nb").forEach(function(b){
+    var oc=b.getAttribute("onclick")||"";
+    if(oc.indexOf("'"+t+"'")!==-1)b.classList.add("active");
+  });
+  if(t==="uebersicht")rendD();
+  if(t==="verlauf")rendH();
+  if(t==="anschreiben")popLS();
+  if(t==="profil")loadProfileForm();
+  // lizenz: nichts zu initialisieren
+}
+
+function selArt(a,btn){
+  curArt=a;
+  document.querySelectorAll(".rb").forEach(function(b){b.classList.remove("sel");});
+  btn.classList.add("sel");
+  document.getElementById("mg").style.display=(a==="ausfall")?"none":"block";
+  updE();
+}
+
+function fm(n){return n.toFixed(2).replace(".",",")+" \u20ac";}
+
+function calcC(tt,art,min,preis){
+  var t=TT[tt]||TT.einzel;
+  if(art==="ausfall"){
+    if(t.usePct)return{lv:"ca",pct:100,amt:preis,lbl:"Ausfall \u2013 Vollerstattung"};
+    // Zeitkarten/D-Ticket: kein Einzelfahrpreis -> Pauschale gilt auch bei Ausfall
+    var maxA=t.isDT?(t.bv*t.mp/100):null;
+    var minC=Math.ceil(4/t.p);
+    return{lv:"lo",pct:0,amt:t.p,pau:true,lbl:t.label+" \u2013 Ausfall (Pauschale)",maxA:maxA,minC:minC,ausfall:true};
+  }
+  if(t.usePct){
+    if(!min||min<60)return{lv:"no",pct:0,amt:0};
+    if(min>=120)return{lv:"hi",pct:50,amt:preis*0.5,lbl:"50\u202f% (\u2265\u202f120\u202fMin)"};
+    return{lv:"lo",pct:25,amt:preis*0.25,lbl:"25\u202f% (\u2265\u202f60\u202fMin)"};
+  } else {
+    if(!min||min<60)return{lv:"no",pct:0,amt:0};
+    var maxA=t.isDT?(t.bv*t.mp/100):null;
+    var minC=Math.ceil(4/t.p);
+    return{lv:"lo",pct:0,amt:t.p,pau:true,lbl:t.label+" \u2013 "+t.p.toFixed(2).replace(".",",")+"\u202f\u20ac/Fall",maxA:maxA,minC:minC};
+  }
+}
+
+function updE(){
+  var min=parseInt(document.getElementById("fm_").value)||0;
+  var preis=parseFloat(document.getElementById("fp_").value)||0;
+  var c=calcC(curTT,curArt,min,preis);
+  var box=document.getElementById("eb");
+  if(c.lv==="no"){
+    box.innerHTML="<div class='eb en'><div class='elb'>Kein Anspruch unter 60 Min</div><div style='font-size:.75rem'>Trotzdem einreichen \u2014 DB gew\u00e4hrt oft Kulanzgutscheine!</div></div>";
+  } else if(c.lv==="ca"){
+    box.innerHTML="<div class='eb eca'><div class='elb'>"+c.lbl+"</div><div class='eam'>"+(c.amt?fm(c.amt):"100\u202f%")+"</div></div>";
+  } else if(c.pau){
+    var sub=c.maxA?"Max. "+fm(c.maxA)+"/Monat \u2022 mind. "+c.minC+" F\u00e4lle f\u00fcr Auszahlung":"";
+    var ausfallHint=c.ausfall?"<div class='esub'>\u26a0\ufe0f Kein Anspruch auf 100\u202f% \u2014 Zeitkarten haben keinen Einzelfahrpreis. Pauschale gilt. Zus\u00e4tzlich: Anspruch auf ErsatzbeF\u00f6rderung (anderer Zug/Bus). Bei letzter Verbindung: Taxi bis 80\u202f\u20ac m\u00f6glich.</div>":"";
+    box.innerHTML="<div class='eb elo'><div class='elb'>"+c.lbl+"</div><div class='eam'>"+fm(c.amt)+"</div>"+(sub?"<div class='esub'>"+sub+"</div>":"")+ausfallHint+"</div>";
+  } else {
+    var cls=c.lv==="hi"?"ehi":"elo";
+    box.innerHTML="<div class='eb "+cls+"'><div class='elb'>"+c.lbl+"</div><div class='eam'>"+(preis?fm(c.amt)+" ("+c.pct+"\u202f%)":c.pct+"\u202f%")+"</div></div>";
+  }
+}
+
+var GRUND_HINTS={
+  "Versp\u00e4tung aus vorheriger Fahrt (Umlaufversp\u00e4tung)":{txt:"\u2714 Anspruch besteht \u2014 Umlaufversp\u00e4tungen sind Betriebsplanung der Bahn. Kein Ausnahmetatbestand."},
+  "Weichenst\u00f6rung":               {txt:"\u2714 Anspruch besteht \u2014 Weichen geh\u00f6ren zur Infrastruktur von DB InfraGO."},
+  "Stellwerkst\u00f6rung":             {txt:"\u2714 Anspruch besteht \u2014 Stellwerke liegen im Verantwortungsbereich von DB InfraGO."},
+  "Technischer Defekt am Zug":        {txt:"\u2714 Anspruch besteht \u2014 Fahrzeugm\u00e4ngel liegen klar in der Sph\u00e4re des Bef\u00f6rderers."},
+  "Kurzfristig erkranktes Personal":  {txt:"\u2714 Anspruch besteht \u2014 Personalplanung ist Bahnverantwortung. DB versucht dies manchmal abzulehnen \u2014 auf Antrag bestehen!"},
+  "Bauarbeiten / Langsamfahrstelle":  {txt:"\u2714 Anspruch besteht \u2014 Planbare Infrastrukturma\u00dfnahmen z\u00e4hlen nicht als h\u00f6here Gewalt."},
+  "Versp\u00e4teter Gegenzug / Zugkreuzung":{txt:"\u2714 Anspruch besteht \u2014 Betriebsst\u00f6rung im Netz liegt in der Verantwortung der Bahn."},
+  "Warten auf Anschlussreisende":     {txt:"\u2714 Anspruch besteht \u2014 Betriebliche Entscheidung der Bahn, kein Ausnahmetatbestand."},
+  "Streik des Bahnpersonals (GDL/EVG)":{txt:"\u2714 Anspruch besteht \u2014 Streik gilt seit Juni\u202f2023 ausdr\u00fccklich NICHT als h\u00f6here Gewalt."}
+};
+function updGrund(){
+  var v=document.getElementById("fgrund_").value;
+  var box=document.getElementById("grundHinweis");
+  if(!v||!GRUND_HINTS[v]){box.style.display="none";return;}
+  var h=GRUND_HINTS[v];
+  box.innerHTML="<div style='background:rgba(16,185,129,.08);border:1px solid var(--green);border-radius:8px;padding:.6rem .85rem;font-size:.78rem;color:#6EE7B7'>"+h.txt+"</div>";
+  box.style.display="block";
+}
+
+function toggleSteuer(){
+  var c=document.getElementById("steuerContent");
+  var t=document.getElementById("steuerToggle");
+  var open=c.style.display==="none";
+  c.style.display=open?"block":"none";
+  t.textContent=open?"\u25b2 Schlie\u00dfen":"\u25bc Details anzeigen";
+}
+
+function validateEntry(zug, dat, min, preis, art){
+  if(!zug) return "Bitte Zugnummer eingeben (z.B. S1, ICE 571).";
+  if(!dat)  return "Bitte Datum ausw\u00e4hlen.";
+  if(art !== "ausfall"){
+    if(min < 0)   return "Versp\u00e4tung kann nicht negativ sein.";
+    if(min > 600) return "Versp\u00e4tung \u00fcber 600 Minuten? Bitte pr\u00fcfen.";
+  }
+  if(preis < 0)   return "Fahrpreis kann nicht negativ sein.";
+  if(preis > 999) return "Fahrpreis \u00fcber 999 \u20ac? Bitte pr\u00fcfen.";
+  return null;
+}
+
+function saveEntry(){
+  var zug=document.getElementById("fz_").value.trim();
+  var dat=document.getElementById("fd_").value;
+  var preis=parseFloat(document.getElementById("fp_").value)||0;
+  var min=parseInt(document.getElementById("fm_").value)||0;
+  var err=validateEntry(zug,dat,min,preis,curArt);
+  if(err){
+    // Fehlermeldung inline anzeigen statt alert
+    var eb=document.getElementById("eb");
+    eb.innerHTML="<div style='background:rgba(232,0,28,.08);border:1px solid var(--red);border-radius:8px;padding:.6rem .85rem;font-size:.8rem;color:#FCA5A5;margin-bottom:.5rem'>\u26a0\ufe0f "+err+"</div>";
+    return;
+  }
+  var comp=calcC(curTT,curArt,min,preis);
+  var noC=(comp.lv==="no"&&!comp.pau);
+  var entry={
+    id:Date.now().toString(),
+    zug:zug,von:document.getElementById("fv_").value.trim(),nach:document.getElementById("fn_").value.trim(),
+    dat:dat,zeit:document.getElementById("fzeit_").value,tt:curTT,art:curArt,min:min,preis:preis,
+    grund:document.getElementById("fgrund_").value,
+    notiz:document.getElementById("fno_").value.trim(),
+    comp:comp,status:noC?"kein_anspruch":"ausstehend",ts:new Date().toISOString()
+  };
+  var es=gE();es.unshift(entry);sE(es);
+  ["fz_","fv_","fn_","fzeit_","fm_","fp_","fno_"].forEach(function(id){document.getElementById(id).value="";});
+  document.getElementById("fgrund_").value="";
+  document.getElementById("grundHinweis").style.display="none";;
+  document.getElementById("eb").innerHTML="";
+  showTab("verlauf");
+}
+
+// Dashboard
+function rendD(){
+  var es=gE();
+  var pe=es.filter(function(e){return e.status==="ausstehend";});
+  var be=es.filter(function(e){return e.status==="beantragt";});
+  var re=es.filter(function(e){return e.status==="erstattet";});
+  var tp=pe.reduce(function(s,e){return s+(e.comp&&e.comp.amt||0);},0);
+  var tr=re.reduce(function(s,e){return s+(e.comp&&e.comp.amt||0);},0);
+  document.getElementById("sg").innerHTML=
+    sc("Erfasste Fahrten",es.length,"")+sc("Offen",pe.length>0?fm(tp):pe.length,"am")+
+    sc("Erstattet",re.length>0?fm(tr):"\u2014","gr")+sc("Beantragt",be.length,"bl");
+  var rc=es.slice(0,3);var ct=document.getElementById("re");
+  ct.innerHTML=rc.length?rc.map(function(e){return eHTML(e,true);}).join(""):"<div class='empty'><div style='font-size:2rem'>&#128650;</div><div style='font-size:.82rem;margin-top:.5rem'>Noch keine Eintr\u00e4ge.<br>Starte mit dem Erfassen-Tab.</div></div>";
+}
+function sc(l,v,c){return "<div class='sc'><div class='sl'>"+l+"</div><div class='sv "+(c||"")+"'>"+v+"</div></div>";}
+
+// History
+var ARTS={versp:"Versp\u00e4tung",ausfall:"Ausfall",anschluss:"Anschluss verpasst"};
+var SBG={
+  ausstehend:"<span class='badge bp'>&#8987; Ausstehend</span>",
+  beantragt:"<span class='badge bsu'>&#128228; Beantragt</span>",
+  erstattet:"<span class='badge br'>&#10003; Erstattet</span>",
+  abgelehnt:"<span class='badge bab'>&#10005; Abgelehnt</span>",
+  kein_anspruch:"<span class='badge bn'>\u2014 Kein Anspruch</span>"
+};
+function fD(d){if(!d)return"\u2014";try{return new Date(d+"T12:00:00").toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});}catch(e){return d;}}
+
+function rendH(){
+  var f=document.getElementById("fs_").value;
+  var es=gE();if(f!=="all")es=es.filter(function(e){return e.status===f;});
+  var ct=document.getElementById("hl");
+  ct.innerHTML=es.length?es.map(function(e){return eHTML(e,false);}).join(""):"<div class='empty'><div style='font-size:2rem'>&#128269;</div><div style='font-size:.82rem;margin-top:.5rem'>Keine Eintr\u00e4ge.</div></div>";
+}
+
+function eHTML(e,compact){
+  var tt=TT[e.tt]||TT.einzel;
+  var at="";
+  if(e.comp){
+    if(e.comp.pau)at="<span class='at aam'>"+fm(e.comp.amt)+"/Fall</span>";
+    else if(e.comp.pct===100)at="<span class='at are'>Vollerstattung</span>";
+    else if(e.comp.pct>0)at="<span class='at "+(e.comp.pct>=50?"agr":"aam")+"'>"+fm(e.comp.amt)+" ("+e.comp.pct+"\u202f%)</span>";
+  }
+  var kl1=tt.kl1?"<span class='badge-1kl'>1.KL</span>":"";
+  var meta="<span>&#128197; "+fD(e.dat)+(e.zeit?" "+e.zeit+" Uhr":"")+"</span><span>"+tt.label+" "+kl1+"</span><span>"+(ARTS[e.art]||"")+(e.art!=="ausfall"&&e.min?" ("+e.min+" Min)":"")+"</span>"+(e.grund?"<span>&#128681; "+e.grund+"</span>":"")+(e.preis?"<span>"+fm(e.preis)+"</span>":"")+(at?"<span>"+at+"</span>":"");
+  var ac="";
+  if(!compact){
+    if(e.status==="ausstehend"){
+      ac="<button class='btn btn-p' onclick='openDB(\""+e.id+"\")' style='font-size:.72rem;padding:.38rem .7rem'>&#127760; DB-Portal</button>"
+        +"<button class='btn btn-s' onclick='goL(\""+e.id+"\")' style='font-size:.72rem;padding:.38rem .7rem'>&#128221; Anschreiben</button>"
+        +"<button class='btn btn-s' onclick='stS(\""+e.id+"\",\"beantragt\")' style='font-size:.72rem;padding:.38rem .7rem'>&#128228; Beantragt</button>";
+    }
+    if(e.status==="beantragt"){
+      ac="<button class='btn btn-s' onclick='stS(\""+e.id+"\",\"erstattet\")' style='font-size:.72rem;padding:.38rem .7rem;color:var(--green)'>&#10003; Erstattet</button>"
+        +"<button class='btn btn-s' onclick='stS(\""+e.id+"\",\"abgelehnt\")' style='font-size:.72rem;padding:.38rem .7rem'>&#10005; Abgelehnt</button>";
+    }
+    ac+="<button class='btn btn-s' onclick='openEdit(\""+e.id+"\")' style='font-size:.72rem;padding:.38rem .7rem'>&#9998; Bearbeiten</button>";
+    ac+="<button class='btn btn-g' onclick='delE(\""+e.id+"\")' style='margin-left:auto'>&#128465;</button>";
+    ac="<div class='ea'>"+ac+"</div>";
+  }
+  return "<div class='ec'><div class='eh'><div class='et'>"+e.zug+"</div>"+(SBG[e.status]||"")+"</div>"
+    +"<div class='er'>"+(e.von||"?")+" \u2192 "+(e.nach||"?")+"</div>"
+    +"<div class='em'>"+meta+"</div>"+ac+"</div>";
+}
+
+function stS(id,s){var es=gE();var e=es.find(function(x){return x.id===id;});if(e){e.status=s;sE(es);rendH();}}
+function openDB(id){stS(id,"beantragt");window.open("https://www.bahn.de/service/informationen/fahrgastrechte/erstattung-zugantraege","_blank");}
+function goL(id){showTab("anschreiben");setTimeout(function(){document.getElementById("le_").value=id;updL();},80);}
+
+var _di=null;
+function delE(id){
+  if(!confirm("Eintrag wirklich l\u00f6schen?"))return;
+  sE(gE().filter(function(e){return e.id!==id;}));
+  rendH();
+  rendD();
+}
+
+var _ei=null;
+function openEdit(id){
+  var e=gE().find(function(x){return x.id===id;});
+  if(!e)return;
+  _ei=id;
+  document.getElementById("ez_").value=e.zug||"";
+  document.getElementById("ed_").value=e.dat||"";
+  document.getElementById("ezeit_").value=e.zeit||"";
+  document.getElementById("ev_").value=e.von||"";
+  document.getElementById("en_").value=e.nach||"";
+  document.getElementById("emin_").value=e.min||"";
+  document.getElementById("epreis_").value=e.preis||"";
+  document.getElementById("egrund_").value=e.grund||"";
+  document.getElementById("enot_").value=e.notiz||"";
+  document.getElementById("em").classList.add("open");
+}
+function clEM(){document.getElementById("em").classList.remove("open");_ei=null;}
+function cfEdit(){
+  if(!_ei)return;
+  var es=gE();
+  var e=es.find(function(x){return x.id===_ei;});
+  if(!e){clEM();return;}
+  var min=parseInt(document.getElementById("emin_").value)||0;
+  var preis=parseFloat(document.getElementById("epreis_").value)||0;
+  e.zug=document.getElementById("ez_").value.trim()||e.zug;
+  e.dat=document.getElementById("ed_").value||e.dat;
+  e.zeit=document.getElementById("ezeit_").value;
+  e.von=document.getElementById("ev_").value.trim();
+  e.nach=document.getElementById("en_").value.trim();
+  e.min=min;
+  e.preis=preis;
+  e.grund=document.getElementById("egrund_").value;
+  e.notiz=document.getElementById("enot_").value.trim();
+  e.comp=calcC(e.tt,e.art,min,preis);
+  var noC=(e.comp.lv==="no"&&!e.comp.pau);
+  if(e.status==="kein_anspruch"&&!noC)e.status="ausstehend";
+  sE(es);
+  clEM();
+  rendH();
+}
+
+// Letter
+// ===== PROFIL =====
+function saveProfile(){
+  var p={
+    vorname:document.getElementById("pVorname").value.trim(),
+    nachname:document.getElementById("pNachname").value.trim(),
+    strasse:document.getElementById("pStrasse").value.trim(),
+    plz:document.getElementById("pPlz").value.trim(),
+    stadt:document.getElementById("pStadt").value.trim(),
+    email:document.getElementById("pEmail").value.trim(),
+    tel:document.getElementById("pTel").value.trim(),
+    iban:document.getElementById("pIban").value.trim(),
+    konto:document.getElementById("pKonto").value.trim(),
+    ticketId:document.getElementById("pTicketId").value.trim(),
+    upgradeId:document.getElementById("pUpgradeId").value.trim()
+  };
+  _saveProfileData(p);
+  var s=document.getElementById("profileSaved");
+  if(s){s.style.display="block";setTimeout(function(){s.style.display="none";},2500);}
+}
+function exportData(){
+  var backup={
+    version:"1.0",
+    exported:new Date().toISOString(),
+    entries:gE(),
+    profil:getProfile()
+  };
+  var json=JSON.stringify(backup,null,2);
+  var blob=new Blob([json],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  var date=new Date().toISOString().slice(0,10);
+  a.href=url;a.download="bahnrecht-backup-"+date+".json";
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function importData(inp){
+  var f=inp.files[0];if(!f)return;
+  var st=document.getElementById("importStatus");
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var backup=JSON.parse(ev.target.result);
+      if(!backup.entries&&!backup.profil){st.innerHTML="&#10060; Ung\u00fcltige Datei.";st.style.cssText="display:block;background:rgba(232,0,28,.08);border:1px solid var(--red);color:#FCA5A5;";return;}
+
+      // Eintr\u00e4ge zusammenf\u00fchren (keine Duplikate per ID)
+      var existing=gE();var existIds={};
+      existing.forEach(function(e){existIds[e.id]=true;});
+      var newEntries=(backup.entries||[]).filter(function(e){return !existIds[e.id];});
+      sE(existing.concat(newEntries));
+
+      // Profil importieren (nur wenn leer oder User best\u00e4tigt)
+      if(backup.profil){
+        var curP=getProfile();
+        var curEmpty=!curP.vorname&&!curP.nachname&&!curP.iban;
+        if(curEmpty){
+          lsSet("br_profil",JSON.stringify(backup.profil));
+          loadProfileForm();updateProfilePreview();
+        }
+      }
+
+      var msg=newEntries.length+" neue Eintr\u00e4ge importiert"+(backup.profil&&!getProfile().vorname?" + Profil":"")+". "+existing.length+" bestehende Eintr\u00e4ge behalten.";
+      st.innerHTML="\u2705 "+msg;
+      st.style.cssText="display:block;background:rgba(16,185,129,.08);border:1px solid var(--green);color:#6EE7B7;border-radius:8px;padding:.5rem .75rem;font-size:.78rem;";
+      inp.value="";
+      rendD();
+    }catch(err){
+      st.innerHTML="&#10060; Fehler beim Lesen: "+err.message;
+      st.style.cssText="display:block;background:rgba(232,0,28,.08);border:1px solid var(--red);color:#FCA5A5;border-radius:8px;padding:.5rem .75rem;font-size:.78rem;";
+    }
+  };
+  reader.readAsText(f);
+}
+
+function loadProfileForm(){
+  var p=getProfile();
+  var map={vorname:"pVorname",nachname:"pNachname",strasse:"pStrasse",plz:"pPlz",
+            stadt:"pStadt",email:"pEmail",tel:"pTel",iban:"pIban",konto:"pKonto",
+            ticketId:"pTicketId",upgradeId:"pUpgradeId"};
+  Object.keys(map).forEach(function(k){var el=document.getElementById(map[k]);if(el)el.value=p[k]||"";});
+}
+function profileName(p){return ((p.vorname||"")+" "+(p.nachname||"")).trim()||"[Ihr Name]";}
+function getLetterName(){var ov=document.getElementById("ln_").value.trim();if(ov)return ov;return profileName(getProfile());}
+function getLetterIban(){var ov=document.getElementById("li_").value.trim();if(ov)return ov;var p=getProfile();return p.iban||"[Ihre IBAN]";}
+function getLetterAddr(){
+  var p=getProfile();var name=getLetterName();
+  var l=[name];
+  if(p.strasse)l.push(p.strasse);else l.push("[Strasse Hausnummer]");
+  if(p.plz||p.stadt)l.push(((p.plz||"")+" "+(p.stadt||"")).trim());else l.push("[PLZ Ort]");
+  return l.join("\n");
+}
+function updateProfilePreview(){
+  var p=getProfile();var prev=document.getElementById("profilePreview");var miss=document.getElementById("profileMissing");
+  if(!prev)return;
+  var hasData=p.vorname||p.nachname||p.strasse;
+  if(!hasData){if(prev)prev.style.display="none";if(miss)miss.style.display="block";}
+  else{
+    if(miss)miss.style.display="none";prev.style.display="block";
+    var lines=[profileName(p)];
+    if(p.strasse)lines.push(p.strasse);
+    if(p.plz||p.stadt)lines.push(((p.plz||"")+" "+(p.stadt||"")).trim());
+    if(p.iban)lines.push('<span style="color:var(--muted)">IBAN: '+p.iban+'</span>');
+    prev.innerHTML=lines.join("<br>");
+  }
+}
+
+// ===== LETTER MODE =====
+var _lMode="einzel";
+function setMode(m){
+  _lMode=m;
+  document.getElementById("modeA").classList.toggle("sel",m==="einzel");
+  document.getElementById("modeB").classList.toggle("sel",m==="sammel");
+  document.getElementById("pEinzel").style.display=m==="einzel"?"block":"none";
+  document.getElementById("pSammel").style.display=m==="sammel"?"block":"none";
+  if(m==="sammel")initSammel();
+}
+function onLetterInput(){if(_lMode==="einzel")updL();else genSammelLetter();}
+
+function popLS(){
+  updateProfilePreview();
+  rendEEntryList();
+  initSammel();
+}
+
+function rendEEntryList(){
+  var es=gE();var ct=document.getElementById("eEntryList");var lo=document.getElementById("lo_");
+  if(!es.length){ct.innerHTML="<div style='font-size:.82rem;color:var(--muted);text-align:center;padding:1rem'>Noch keine Eintr\u00e4ge.</div>";lo.style.display="none";return;}
+  ct.innerHTML=es.map(function(e){
+    var tt=TT[e.tt]||TT.einzel;
+    var art=ARTS[e.art]||"";var delay=e.art!=="ausfall"&&e.min?" ("+e.min+" Min)":"";
+    return "<label style='display:flex;align-items:flex-start;gap:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.65rem .85rem;margin-bottom:.45rem;cursor:pointer'>"
+      +"<input type='checkbox' class='eLet' value='"+e.id+"' onchange='updL()' style='width:auto;margin-top:.2rem;accent-color:var(--red)'>"
+      +"<div style='flex:1'><div style='font-weight:700;font-family:var(--mono);font-size:.85rem'>"+e.zug+(e.zeit?" \u2022 "+e.zeit+" Uhr":"")+"</div>"
+      +"<div style='font-size:.73rem;color:var(--muted)'>"+fD(e.dat)+" \u2022 "+(e.von||"?")+" \u2192 "+(e.nach||"?")+"</div>"
+      +"<div style='font-size:.73rem;margin-top:.1rem'>"+tt.label+" \u2022 "+art+delay+(e.grund?" \u2022 "+e.grund:"")+"</div></div>"
+      +(e.comp&&e.comp.amt?"<div style='font-family:var(--mono);font-size:.78rem;color:var(--amber);white-space:nowrap;margin-left:auto'>"+fm(e.comp.amt)+"</div>":"")
+    +"</label>";
+  }).join("");
+  updL();
+}
+
+var _allSel=false;
+function toggleAllEntries(){
+  _allSel=!_allSel;
+  document.querySelectorAll(".eLet").forEach(function(cb){cb.checked=_allSel;});
+  document.getElementById("selAllBtn").textContent=_allSel?"Keine":"Alle";
+  updL();
+}
+
+function updL(){
+  var ids=[];document.querySelectorAll(".eLet:checked").forEach(function(cb){ids.push(cb.value);});
+  var lo=document.getElementById("lo_");
+  if(!ids.length){lo.style.display="none";return;}
+  var es=gE();
+  var entries=ids.map(function(id){return es.find(function(x){return x.id===id;});}).filter(Boolean);
+  entries.sort(function(a,b){return a.dat.localeCompare(b.dat)||(a.zeit||"").localeCompare(b.zeit||"");});
+  var name=getLetterName();var iban=getLetterIban();var addr=getLetterAddr();
+  var p=getProfile();
+  var today=new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"long",year:"numeric"});
+  var txt="";
+
+  if(entries.length===1){
+    // ---- EINZELNER EINTRAG: klassisches Anschreiben ----
+    var e=entries[0];var tt=TT[e.tt]||TT.einzel;var dF=fD(e.dat);
+    var aT={versp:"Versp\u00e4tung",ausfall:"Zugausfall",anschluss:"verpassten Anschluss"}[e.art]||"";
+    var dL=e.art==="ausfall"?"Art:              Zugausfall":e.art==="anschluss"?"Art:              Verpasster Anschluss ("+e.min+" Min)":"Versp\u00e4tung:        "+e.min+" Minuten";
+    var cS="";
+    if(tt.usePct){
+      if(e.comp&&e.comp.pct===100)cS="Ich bitte um vollst\u00e4ndige Erstattung des Fahrpreises\n("+(e.preis?fm(e.preis):"[Betrag]")+") gem\u00e4\u00df \u00a7\u202f17 Fahrgastrechte-VO.";
+      else if(e.comp&&e.comp.pct>0)cS="Erstattungsanspruch: "+e.comp.pct+"\u202f% des Fahrpreises.\n\nErstattungsbetrag: "+fm(e.comp.amt)+" ("+e.comp.pct+"\u202f% von "+(e.preis?fm(e.preis):"[Betrag]")+")";
+      else cS="Ich bitte um Pr\u00fcfung und ggf. Kulanzerstattung.";
+    } else {
+      cS="Ich bin Inhaber eines "+tt.label+".\nGem\u00e4\u00df den gesetzlichen Regelungen f\u00fcr Zeitfahrkarten\nbitte ich um Erstattung der Versp\u00e4tungspauschale von "+fm(tt.p)+" je Fall.";
+    }
+    txt=addr+"\n\nDeutsche Bahn AG\nFahrgastrechte\nD-60647 Frankfurt am Main\n\n"+today
+      +"\n\nBetreff: Antrag auf Erstattung gem\u00e4\u00df Fahrgastrechten"
+      +"\n\nSehr geehrte Damen und Herren,"
+      +"\n\nam "+dF+" erlitt ich als Fahrgast eine "+aT+"."
+      +"\n\nReisedetails:\n  Zugnummer:        "+(e.zug||"\u2014")
+      +"\n  Strecke:          "+(e.von||"\u2014")+" \u2192 "+(e.nach||"\u2014")
+      +"\n  Reisetag:         "+dF+(e.zeit?"\n  Abfahrt (plan.):  "+e.zeit+" Uhr":"")
+      +"\n  "+dL+(e.grund?"\n  Grund:            "+e.grund:"")
+      +"\n  Ticketart:        "+tt.label+(e.preis?"\n  Fahrpreis:        "+fm(e.preis):"")
+      +(p.ticketId?"\n  Ticket-ID:        "+p.ticketId:"")
+      +(p.upgradeId?"\n  1. Kl. Upgrade:   "+p.upgradeId:"")
+      +(e.notiz?"\n  Hinweis:          "+e.notiz:"")
+      +"\n\n"+cS+"\n\nBitte \u00fcberweisen Sie auf:\n  IBAN: "+iban+"\n\nMit freundlichen Gr\u00fc\u00dfen,\n\n"+name;
+
+  } else {
+    // ---- MEHRERE EINTRÄGE: ein Brief mit Tabelle + Zusammenfassung ----
+    var p2=getProfile();
+
+    // Statistiken
+    var min20=entries.filter(function(e){return e.art==="ausfall"||(e.min&&e.min>=20);});
+    var min60=entries.filter(function(e){return e.art==="ausfall"||(e.min&&e.min>=60);});
+    var ausfaelle=entries.filter(function(e){return e.art==="ausfall";});
+    var totalMinutes=0;
+    entries.forEach(function(e){if(e.min&&e.art!=="ausfall")totalMinutes+=parseInt(e.min)||0;});
+    var totalAmt=0;
+    min60.forEach(function(e){if(e.comp&&e.comp.amt>0)totalAmt+=e.comp.amt;});
+
+    // Ticketarten
+    var ttSet={};entries.forEach(function(e){ttSet[e.tt]=true;});
+    var ttLabels=Object.keys(ttSet).map(function(k){return(TT[k]||TT.einzel).label;}).join(", ");
+    var isZeitkarte=Object.keys(ttSet).some(function(k){return !TT[k].usePct;});
+
+    // Tabelle aller Fahrten
+    var tbl="Nr.  Datum        Zeit   Zug         Strecke                      Art              Verz.   Erstattung\n";
+    tbl+="-".repeat(100)+"\n";
+    entries.forEach(function(e,i){
+      var nr=String(i+1).padStart(2," ")+".";
+      var dat=fD(e.dat).padEnd(12," ");
+      var zeit=(e.zeit||"--:--").padEnd(7," ");
+      var zug=(e.zug||"\u2014").padEnd(11," ");
+      var str=((e.von||"?")+" \u2192 "+(e.nach||"?")).substring(0,28).padEnd(29," ");
+      var art=(ARTS[e.art]||"").padEnd(16," ");
+      var min=(e.art==="ausfall"?"Ausfall":(e.min?e.min+" Min":"--")).padEnd(8," ");
+      var erstattung="";
+      if(e.art==="ausfall") erstattung="Ausfall";
+      else if(e.comp&&e.comp.pau&&e.min>=60) erstattung=fm(e.comp.amt);
+      else if(e.comp&&e.comp.pct>0) erstattung=fm(e.comp.amt)+" ("+e.comp.pct+"%)";
+      else if(e.min>=20) erstattung="dokumentiert (\u226020 Min)";
+      else erstattung="--";
+      tbl+=nr+" "+dat+zeit+zug+str+art+min+erstattung+"\n";
+    });
+    tbl+="-".repeat(100)+"\n";
+
+    // Zusammenfassung
+    var summ="ZUSAMMENFASSUNG\n";
+    summ+="-".repeat(40)+"\n";
+    summ+="Erfasste Fahrten gesamt:      "+entries.length+"\n";
+    if(ausfaelle.length>0)
+      summ+="davon Ausf\u00e4lle:               "+ausfaelle.length+"\n";
+    summ+="Fahrten mit \u226520 Min:          "+min20.length+(totalMinutes>0?" ("+totalMinutes+" Min gesamt)":"")+"\n";
+    summ+="Fahrten mit \u226560 Min (Anspruch):"+String(min60.length).padStart(2," ")+"\n";
+    if(totalAmt>0)
+      summ+="-".repeat(40)+"\n"+"Erstattungsbetrag:            "+fm(totalAmt)+"\n";
+    tbl+="\n"+summ;
+
+    // Begleittext je nach Ticketart
+    var bodyText="";
+    if(isZeitkarte){
+      bodyText="Gem\u00e4\u00df \u00a7\u202f17 Fahrgastrechte-VO (EU) 2021/782 dokumentiere ich hiermit\nalle Versp\u00e4tungen ab 20 Minuten im oben genannten Zeitraum.\n\n"
+        +"Fahrten mit einer Versp\u00e4tung von 60 Minuten oder mehr begr\u00fcnden\neinen Anspruch auf die gesetzliche Pauschale gem\u00e4\u00df \u00a7\u202f11 EVO.\n\n"
+        +(min60.length>0
+          ?"Anspruchsberechtigte F\u00e4lle: "+min60.length+" \u00d7 Pauschale = "+fm(totalAmt)+"\n\nIch bitte um Erstattung des Gesamtbetrags von "+fm(totalAmt)+" auf:\n  IBAN: "+iban
+          :"Ich bitte Sie, die dokumentierten Versp\u00e4tungen zu pr\u00fcfen\nund mir den Eingang zu best\u00e4tigen.");
+    } else {
+      bodyText="Im nachfolgenden Zeitraum war ich von "+entries.length+" Versp\u00e4tungen\nbzw. Ausf\u00e4llen betroffen und mache meine Fahrgastrechte gem\u00e4\u00df\n\u00a7\u202f17 Fahrgastrechte-VO (EU) 2021/782 geltend.\n\n"
+        +(totalAmt>0
+          ?"Gesamterstattungsbetrag: "+fm(totalAmt)+"\n\nIch bitte um \u00dcberweisung auf:\n  IBAN: "+iban
+          :"Ich bitte um Pr\u00fcfung und Erstattung auf:\n  IBAN: "+iban);
+    }
+
+    txt=addr+"\n\nDeutsche Bahn AG\nFahrgastrechte\nD-60647 Frankfurt am Main\n\n"+today
+      +"\n\nBetreff: Antrag auf Erstattung gem\u00e4\u00df Fahrgastrechten \u2013 "+entries.length+" F\u00e4lle"
+      +"\n\nSehr geehrte Damen und Herren,\n\n"
+      +bodyText
+      +"\n\nTicketart:  "+ttLabels
+      +(p2.ticketId?"\nTicket-ID:  "+p2.ticketId:"")
+      +(p2.upgradeId?"\n1. Kl. Upgrade-Nr.: "+p2.upgradeId:"")
+      +"\n\n\u00dcbersicht der betroffenen Fahrten:\n\n"+tbl
+      +"\nBitte beilegen: Nachweis des Tickets / Abonnements."
+      +"\nFrist: 3 Monate ab dem jeweils letzten dokumentierten Vorfall."
+      +"\n\nMit freundlichen Gr\u00fc\u00dfen,\n\n"+name;
+  }
+
+  lo.style.display="block";
+  lo.innerHTML="<a href='https://www.bahn.de/service/informationen/fahrgastrechte/erstattung-zugantraege' target='_blank' class='db-btn'>"
+    +"<div><div>&#127760; DB-Erstattungsportal</div><div class='db-sub'>bahn.de \u2022 Online-Antrag stellen</div></div><span style='font-size:1.1rem'>&#8594;</span></a>"
+    +(entries.length>1?"<div class='notice'>&#128203; "+entries.length+" Eintr\u00e4ge \u2014 ein gemeinsames Anschreiben mit \u00dcbersichtstabelle.</div>":"")
+    +"<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem'>"
+    +"<div class='stit' style='margin:0;font-size:.85rem'>Anschreiben"+(entries.length>1?" ("+entries.length+" F\u00e4lle)":"")+"</div>"
+    +"<button class='btn btn-s' id='cpB' onclick=\"cpLetter('lp_','cpB')\" style='font-size:.75rem;padding:.35rem .7rem'>&#128203; Kopieren</button></div>"
+    +"<div class='lp' id='lp_'></div>"
+    +"<div class='notice'>Ticketnachweis beilegen. Frist: <strong>3 Monate</strong> nach der Fahrt.</div>";
+  document.getElementById("lp_").textContent=txt;
+}
+
+// ===== SAMMELANTRAG =====
+function initSammel(){
+  var es=gE().filter(function(e){return !TT[e.tt]||!TT[e.tt].usePct;});
+  var months={};es.forEach(function(e){if(!e.dat)return;months[e.dat.substring(0,7)]=true;});
+  var sel=document.getElementById("sMonth");var cur=sel.value;
+  sel.innerHTML="<option value=''>\u2013 Monat w\u00e4hlen \u2013</option>";
+  Object.keys(months).sort().reverse().forEach(function(mo){
+    var o=document.createElement("option");o.value=mo;
+    o.textContent=new Date(mo+"-01").toLocaleDateString("de-DE",{month:"long",year:"numeric"});sel.appendChild(o);
+  });
+  if(cur)sel.value=cur;rendSammel();
+}
+var _sSelected={};
+function rendSammel(){
+  var mo=document.getElementById("sMonth").value;var ttKey=document.getElementById("sTT").value;
+  var sE_=document.getElementById("sEntries");var sEm=document.getElementById("sEmpty");
+  document.getElementById("sSammelOut").style.display="none";
+  if(!mo){sE_.style.display="none";sEm.style.display="none";return;}
+
+  var es=gE().filter(function(e){return e.dat&&e.dat.substring(0,7)===mo&&TT[e.tt]&&!TT[e.tt].usePct;});
+  if(!es.length){sE_.style.display="none";sEm.style.display="block";return;}
+
+  // Auto-detect: welcher Tickettyp kommt am häufigsten vor?
+  var ttCount={};
+  es.forEach(function(e){ttCount[e.tt]=(ttCount[e.tt]||0)+1;});
+  var dominantTT=Object.keys(ttCount).sort(function(a,b){return ttCount[b]-ttCount[a];})[0];
+  if(dominantTT&&dominantTT!==ttKey){
+    document.getElementById("sTT").value=dominantTT;
+    ttKey=dominantTT;
+  }
+
+  var tt=TT[ttKey];
+  sEm.style.display="none";sE_.style.display="block";_sSelected={};
+  document.getElementById("sCaseList").innerHTML=es.map(function(e){
+    var entryTT=TT[e.tt]||tt; // Eigenen Tickettyp des Eintrags verwenden
+    var art=ARTS[e.art]||"";var minT=e.art!=="ausfall"&&e.min?" ("+e.min+" Min)":"";var zeitT=e.zeit?" "+e.zeit+" Uhr":"";
+    return "<label style='display:flex;align-items:flex-start;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:.75rem .9rem;margin-bottom:.5rem;cursor:pointer'>"
+      +"<input type='checkbox' id='sc_"+e.id+"' value='"+e.id+"' onchange='onSCheck()' style='width:auto;margin-top:.15rem;accent-color:var(--red)'>"
+      +"<div><div style='font-weight:700;font-family:var(--mono);font-size:.88rem'>"+e.zug+"</div>"
+      +"<div style='font-size:.75rem;color:var(--muted)'>"+fD(e.dat)+zeitT+" \u2022 "+(e.von||"?")+" \u2192 "+(e.nach||"?")+"</div>"
+      +"<div style='font-size:.75rem;margin-top:.15rem'>"+art+minT+(e.notiz?" \u2022 "+e.notiz:"")+"</div></div>"
+      +"<div style='margin-left:auto;font-family:var(--mono);font-size:.82rem;color:var(--amber);white-space:nowrap'>+"+fm(entryTT.p)+"</div></label>";
+  }).join("");
+  updSammelTotal(ttKey);
+}
+function onSCheck(){updSammelTotal(document.getElementById("sTT").value);}
+function updSammelTotal(ttKey){
+  var tt=TT[ttKey];var selected=[];
+  document.querySelectorAll("[id^='sc_']").forEach(function(cb){if(cb.checked)selected.push(cb.value);});
+  var esAll=gE();
+  var total=selected.reduce(function(s,id){
+    var e=esAll.find(function(x){return x.id===id;});
+    return s+((e&&TT[e.tt]&&!TT[e.tt].usePct)?TT[e.tt].p:tt.p);
+  },0);
+  var maxAmt=tt.isDT?(tt.bv*tt.mp/100):null;var pct=maxAmt?Math.min(100,total/maxAmt*100):0;
+  document.getElementById("sSumLine").textContent=selected.length+" Fall"+(selected.length!==1?"e":"")+" \u2022 "+fm(total)+(maxAmt?" von max. "+fm(maxAmt):"");
+  var ok=total>=4;var overMax=maxAmt&&total>maxAmt;
+  document.getElementById("sStatus").innerHTML=overMax?"<span style='color:var(--amber)'>&#9888;&#65039; Max. Auszahlungsbetrag erreicht</span>":
+    ok?"<span style='color:var(--green)'>&#10003; Mindestauszahlung erreicht (4\u202f\u20ac)</span>":
+    "<span style='color:var(--muted)'>Noch "+fm(Math.max(0,4-total))+" f\u00fcr Auszahlung</span>";
+  if(maxAmt){document.getElementById("sProgressBar").style.width=Math.min(100,pct)+"%";
+    document.getElementById("sProgressBar").style.background=overMax?"var(--amber)":"var(--green)";
+    document.getElementById("sMaxLabel").textContent="Max. "+fm(maxAmt);}
+  if(ok&&selected.length>0)genSammelLetter(selected,ttKey,total);
+  else document.getElementById("sSammelOut").style.display="none";
+}
+function genSammelLetter(selIds,ttKey,total){
+  var name=getLetterName();var iban=getLetterIban();var addr=getLetterAddr();
+  var tt=TT[ttKey||document.getElementById("sTT").value];
+  if(!selIds){
+    var cbs=document.querySelectorAll("[id^='sc_']");selIds=[];
+    cbs.forEach(function(cb){if(cb.checked)selIds.push(cb.value);});
+    total=selIds.length*tt.p;
+    if(total<4||!selIds.length){document.getElementById("sSammelOut").style.display="none";return;}
+  }
+  var es=gE();var cases=selIds.map(function(id){return es.find(function(x){return x.id===id;});}).filter(Boolean);
+  cases.sort(function(a,b){return a.dat.localeCompare(b.dat)||(a.zeit||"").localeCompare(b.zeit||"");});
+  var mo=document.getElementById("sMonth").value;
+  var moLabel=mo?new Date(mo+"-01").toLocaleDateString("de-DE",{month:"long",year:"numeric"}):"";
+  var today=new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"long",year:"numeric"});
+  var maxAmt=tt.isDT?(tt.bv*tt.mp/100):null;var payAmt=maxAmt?Math.min(total,maxAmt):total;
+  var tbl="Nr.  Datum        Abfahrt  Zugnr.      Strecke                   Art              Verz.   Grund\n";
+  tbl+="---------------------------------------------------------------------------------------------------------------------------\n";
+  cases.forEach(function(e,i){
+    var nr=String(i+1).padStart(2," ")+".";var dat=fD(e.dat).padEnd(12," ");var zeit=(e.zeit||"--:--").padEnd(8," ");
+    var zug=(e.zug||"\u2014").padEnd(11," ");var str=((e.von||"?")+" \u2192 "+(e.nach||"?")).substring(0,25).padEnd(26," ");
+    var art=(ARTS[e.art]||"").padEnd(16," ");var min=(e.art==="ausfall"?"Ausfall":(e.min?e.min+" Min":"--")).padEnd(8," ");
+    tbl+=nr+" "+dat+zeit+zug+str+art+min+(e.grund||"")+"\n";
+  });
+  tbl+="---------------------------------------------------------------------------------------------------------------------------\n";
+  tbl+="Gesamt: "+cases.length+" F\u00e4lle \u00d7 "+fm(tt.p)+" = "+fm(total)+(maxAmt&&total>maxAmt?" (gekappt auf max. "+fm(maxAmt)+")":"")+"\n";
+  tbl+="Erstattungsbetrag: "+fm(payAmt);
+  var txt=addr+"\n\nDeutsche Bahn AG\nFahrgastrechte\nD-60647 Frankfurt am Main\n\n"+today
+    +"\n\nBetreff: Sammelantrag Fahrgastrechte \u2013 "+tt.label+" \u2013 "+moLabel
+    +"\n\nSehr geehrte Damen und Herren,\n\nals Inhaber eines "+tt.label+"s mache ich meine Fahrgastrechte\ngem\u00e4\u00df \u00a7\u202f17 Fahrgastrechte-VO (EU) 2021/782 f\u00fcr den Monat "+moLabel+" geltend."
+    +(getProfile().ticketId?"\n\nTicket-ID / Auftrags-Nr.: "+getProfile().ticketId:"")
+    +(getProfile().upgradeId?"\n1. Klasse Upgrade-Nr.:    "+getProfile().upgradeId:"")
+    +"\n\n"+tbl
+    +"\n\nGem\u00e4\u00df den Regelungen f\u00fcr Zeitfahrkarten steht mir pro Fall\nab 60 Minuten Versp\u00e4tung eine Pauschale von "+fm(tt.p)+" zu.\n"
+    +(maxAmt?"Die Gesamterstattung ist auf 25\u202f% des Ticketpreises ("+fm(maxAmt)+") begrenzt.\n":"")
+    +"\nBitte \u00fcberweisen Sie "+fm(payAmt)+" auf:\n  IBAN: "+iban+"\n\nMit freundlichen Gr\u00fc\u00dfen,\n\n"+name;
+  document.getElementById("lpS_").textContent=txt;
+  document.getElementById("sSammelOut").style.display="block";
+}
+
+function cpLetter(elId,btnId){
+  var el=document.getElementById(elId);if(!el)return;
+  var t=el.textContent;var b=document.getElementById(btnId);
+  var ok=function(){if(b){b.textContent="Kopiert!";setTimeout(function(){b.textContent="Kopieren";},2000);}};
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(ok).catch(function(){fbC(t,ok);});else fbC(t,ok);
+}
+function fbC(t,cb){var a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");document.body.removeChild(a);cb();}
+
+
+// OCR
+var _tReady=false,_tLoading=false;
+function resetOCR(){document.getElementById("imgI").click();}
+function loadT(cb){
+  if(_tReady){cb();return;}
+  if(_tLoading){setTimeout(function(){loadT(cb);},300);return;}
+  _tLoading=true;
+  var s=document.createElement("script");
+  s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+  s.onload=function(){_tReady=true;_tLoading=false;cb();};
+  s.onerror=function(){
+    _tLoading=false;
+    document.getElementById("oSt").style.display="none";
+    var dz=document.getElementById("dz_");
+    if(dz){
+      dz.innerHTML="<div style='padding:1.5rem;text-align:center;color:#FCA5A5'>"
+        +"<div style='font-size:1.5rem;margin-bottom:.5rem'>\u26a0\ufe0f</div>"
+        +"OCR-Bibliothek konnte nicht geladen werden.<br>"
+        +"<span style='font-size:.75rem;color:var(--muted)'>Bitte Internetverbindung pr\u00fcfen und Seite neu laden.</span></div>";
+    }
+    alert("OCR konnte nicht geladen werden. Bitte Internetverbindung pr\u00fcfen.");
+  };
+  document.head.appendChild(s);
+}
+function loadImg(inp){
+  var f=inp.files[0];if(!f)return;
+  // Vorherige Ergebnisse zurücksetzen
+  ["oz_","om_","ov_","on_","ozeit_","od_"].forEach(function(id){document.getElementById(id).value="";});
+  var t1=document.getElementById("od_txt");if(t1)t1.value="";
+  var t2=document.getElementById("ozeit_txt");if(t2)t2.value="";
+  document.getElementById("oart_").value="versp";
+  document.getElementById("oAusfallHint").style.display="none";
+  document.getElementById("oRes").style.display="none";
+  document.getElementById("oEx").style.display="none";
+  document.getElementById("oSt").style.display="none";
+  var dz=document.getElementById("dz_");
+  var r=new FileReader();
+  r.onload=function(ev){
+    dz.innerHTML="<img src='"+ev.target.result+"' alt='Screenshot'>";
+    dz.classList.add("has-img");dz.onclick=null;
+    runOCR(f);
+  };
+  r.readAsDataURL(f);
+}
+function runOCR(file){
+  document.getElementById("oSt").style.display="block";
+  document.getElementById("oEx").style.display="none";
+  document.getElementById("oRes").style.display="none";
+  document.getElementById("oMsg").textContent="Lade Texterkennung...";
+  document.getElementById("pb_").style.width="5%";
+  loadT(function(){
+    document.getElementById("oMsg").textContent="Texterkennung laeuft...";
+    Tesseract.recognize(file,"deu",{
+      logger:function(m){
+        if(m.status==="recognizing text"){
+          var p=Math.round((m.progress||0)*100);
+          document.getElementById("pb_").style.width=p+"%";
+          document.getElementById("oMsg").textContent="Erkenne Text: "+p+"%";
+        }
+      }
+    }).then(function(res){
+      var text=res.data.text;
+      document.getElementById("pb_").style.width="100%";
+      document.getElementById("oMsg").textContent="Fertig!";
+      document.getElementById("oTxt").textContent=text;
+      document.getElementById("oEx").style.display="block";
+      parseOCR(text);
+    }).catch(function(err){
+      document.getElementById("oMsg").textContent="Fehler: "+err.message;
+      document.getElementById("pb_").style.width="0%";
+      // User-friendly fallback message
+      var dz=document.getElementById("dz_");
+      if(dz){
+        dz.innerHTML="<div style='padding:1.5rem;text-align:center'>"
+          +"<div style='font-size:1.5rem;margin-bottom:.5rem'>&#9888;&#65039;</div>"
+          +"<div style='font-size:.82rem;color:#FCA5A5;margin-bottom:.75rem'>Texterkennung fehlgeschlagen.<br>"+err.message+"</div>"
+          +"<button class='btn btn-s' onclick='resetOCR()' style='font-size:.78rem'>Nochmal versuchen</button>"
+          +"</div>";
+        dz.classList.remove("has-img");
+        dz.onclick=function(){document.getElementById("imgI").click();};
+      }
+    });
+  });
+}
+function parseOCR(text){
+  var t = text.replace(/\r/g,"");
+
+  // --- Ausfall ---
+  var isAusfall = /halt\s+entf.llt|verbindung\s+f.llt\s+aus|zug\s+entf.llt|f.llt\s+aus|ausfall|cancelled/i.test(t);
+
+  // --- Zugnummer ---
+  var trainVal = "";
+  var tClean = t.replace(/[©|\[\]<>®°\u00a9\u00ae]/g," ").replace(/\s+/g," ");
+
+  // Standard: ICE/IC/EC/RE/RB etc.
+  var tM = tClean.match(/\b(ICE|IC|EC|RE|RB|IRE|MEX|FLX|NJ|RJ)\s*[-\u2013]?\s*(\d{1,4})\b/i);
+  if(tM) trainVal = tM[0].replace(/\s+/," ").trim();
+
+  // S-Bahn auf bereinigtem Text
+  if(!trainVal){
+    var sbM = tClean.match(/\bS\s*(\d{1,2})\b/i);
+    if(sbM) trainVal = "S" + sbM[1];
+  }
+
+  // Zeile-für-Zeile Fallback
+  if(!trainVal){
+    t.split("\n").forEach(function(line){
+      if(trainVal) return;
+      var lc = line.replace(/[^a-zA-Z0-9 ]/g," ").replace(/\s+/g," ").trim();
+      var lm = lc.match(/^(S|RE|RB|IC|ICE|EC)\s*(\d{1,4})$/i)
+             || lc.match(/\b(S|RE|RB|ICE|IC|EC)\s*(\d{1,4})\b/i);
+      if(lm) trainVal = lm[1].toUpperCase() + lm[2];
+    });
+  }
+
+  // Bekannte OCR-Artefakte der DB-App: "TG" → S-Bahn (wenn Bahnhöfe gefunden)
+  // "TG" allein in einer Zeile ist oft ein Fehlread von "S1", "S2" etc.
+  // Wir lassen es leer und zeigen den Hinweis — kein falscher Wert besser als falscher
+
+  trainVal = trainVal.replace(/\s+/," ").trim();
+
+  // --- Verspätung ---
+  var dM = t.match(/\+\s*(\d{1,3})\s*(?:Min)?/i)
+         || t.match(/Versp[äa]tung[:\s]+(\d+)/i);
+  var delayVal = (isAusfall && !dM) ? "" : (dM ? dM[1] : "");
+
+  // --- Bahnhöfe ---
+  var vonVal = "", nachVal = "";
+  var nachM = t.match(/\bnach\s+([A-Z\u00c4\u00d6\u00dc][a-zA-Z\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\(\)\-\/]{2,}(?:\s[A-Z][a-z\u00e4\u00f6\u00fc\u00df]{2,})?)/m);
+  if(nachM) nachVal = nachM[1].trim();
+  var hbfP = /([A-Z\u00c4\u00d6\u00dc][a-zA-Z\u00e4\u00f6\u00fc\u00df()\/ -]{2,30}?(?:Hbf|Bf|Bhf|Bahnhof))(?:\s*\([^)]{1,15}\))?/g;
+  var stations = [], mx;
+  while((mx = hbfP.exec(t)) !== null){
+    var s = mx[0].trim();
+    if(!/Buchen|Reisen|Profil|Umgebung|BahnRecht|Ticket/i.test(s)) stations.push(s);
+  }
+  var crP = /([A-Z\u00c4\u00d6\u00dc][a-zA-Z\u00e4\u00f6\u00fc\u00df]+\([A-Za-z\u00e4\u00f6\u00fc\u00df]+\)(?:-[A-Z\u00c4\u00d6\u00dc][a-zA-Z\u00e4\u00f6\u00fc\u00df]+)?)/g;
+  while((mx = crP.exec(t)) !== null){ if(!stations.includes(mx[1])) stations.push(mx[1]); }
+  var lines = t.split("\n");
+  for(var i=0;i<lines.length;i++){
+    var l = lines[i].replace(/[©\|\>\<\[\]®]/g,"").trim();
+    if(/^[A-Z\u00c4\u00d6\u00dc][a-zA-Z\u00e4\u00f6\u00fc\u00df -]{3,}$/.test(l)
+      && !/Buchen|Reisen|Profil|Umgebung|BahnRecht|Fertig|Ticket|Halt|Verb|Techn|Stor/i.test(l)
+      && l.length < 35){
+      if(!stations.includes(l)) stations.push(l);
+    }
+  }
+  if(!vonVal && stations.length > 0) vonVal = stations[0];
+  if(!nachVal && stations.length > 1) nachVal = stations[1];
+
+  // --- Zeit: Statusleiste ignorieren, Gleis-Angabe als Anker nutzen ---
+  var times=[], timeLines=[], timeLineIdx=[], tp=/\b(\d{1,2}:\d{2})\b/g, mt2;
+  while((mt2=tp.exec(t))!==null){
+    var hh=parseInt(mt2[1].split(":")[0]);
+    if(hh>=0&&hh<=23){
+      var pos=mt2.index;var lineIdx=t.substring(0,pos).split("\n").length-1;
+      var tline2=lines[lineIdx]||"";
+      times.push(mt2[1]);
+      timeLines.push(tline2);
+      timeLineIdx.push(lineIdx);
+    }
+  }
+  var timeVal="";
+  // Strategie 1: Zeit auf Zeile mit Gleis-Angabe "Gl. X" → DB-spezifisch, sehr zuverlässig
+  // Erste Gl.-Zeile = Abfahrt, zweite = Ankunft → wir wollen die erste
+  for(var ti=0;ti<times.length;ti++){
+    if(/Gl\.\s*\d/i.test(timeLines[ti])&&timeLineIdx[ti]>0){
+      timeVal=times[ti];break;
+    }
+  }
+  // Strategie 2: Zeit auf Zeile mit Bahnhofsname (Hbf, (Teck) etc.)
+  if(!timeVal){
+    for(var ti=0;ti<times.length;ti++){
+      var tl=timeLines[ti];
+      if(timeLineIdx[ti]===0)continue;
+      if(/Dauer|dauer|Duration|Ankunft/i.test(tl))continue;
+      if(/Hbf|Bhf|Bahnhof|\([A-Z][a-z]+\)|nach\s/i.test(tl)){timeVal=times[ti];break;}
+    }
+  }
+  // Strategie 3: Erste Zeit nach Zeile 0 (Statusleiste), keine Dauer-Zeile
+  if(!timeVal){
+    for(var ti=0;ti<times.length;ti++){
+      if(timeLineIdx[ti]===0)continue;
+      if(/Dauer|dauer|Duration|Ankunft/i.test(timeLines[ti]))continue;
+      timeVal=times[ti];break;
+    }
+  }
+  // Fallback
+  if(!timeVal&&times.length>1)timeVal=times[1]; // times[0] ist Statusleiste
+  if(!timeVal&&times.length>0)timeVal=times[0];
+
+  // --- Datum ---
+  var MONTHS = {"jan":"01","feb":"02","m\u00e4r":"03","mar":"03","apr":"04","mai":"05","may":"05",
+                "jun":"06","jul":"07","aug":"08","sep":"09","okt":"10","oct":"10","nov":"11","dez":"12","dec":"12"};
+  var dateVal = "";
+  var dateM = t.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if(dateM) dateVal = dateM[3]+"-"+dateM[2].padStart(2,"0")+"-"+dateM[1].padStart(2,"0");
+  if(!dateVal){
+    var dateM2 = t.match(/(\d{1,2})\.\s*([A-Za-z\u00e4\u00f6\u00fc]{3,})[a-z.]*\s*(\d{4})/i);
+    if(dateM2){ var mon=MONTHS[dateM2[2].substring(0,3).toLowerCase()]; if(mon) dateVal=dateM2[3]+"-"+mon+"-"+dateM2[1].padStart(2,"0"); }
+  }
+  if(!dateVal){ var dateM3=t.match(/(\d{4})-(\d{2})-(\d{2})/); if(dateM3) dateVal=dateM3[0]; }
+  if(!dateVal){ var td=new Date(),y=td.getFullYear(),mo2=String(td.getMonth()+1).padStart(2,"0"),d=String(td.getDate()).padStart(2,"0"); dateVal=y+"-"+mo2+"-"+d; }
+
+  // --- Grund automatisch erkennen ---
+  var grundVal = "";
+  var GRUND_OCR = [
+    [/technische[nrs]?\s+st.rung\s+am\s+zug/i,          "Technischer Defekt am Zug"],
+    [/technische[nrs]?\s+st.rung/i,                       "Technischer Defekt am Zug"],
+    [/weichenst.rung/i,                                    "Weichenst\u00f6rung"],
+    [/stellwerkst.rung|stellwerk/i,                        "Stellwerkst\u00f6rung"],
+    [/personalausfall|erkrank|personal.*fehlt/i,           "Kurzfristig erkranktes Personal"],
+    [/bauarbeiten|langsamfahrstelle|baustelle/i,           "Bauarbeiten / Langsamfahrstelle"],
+    [/verspätung.*vorherige|umlauf|folgeverspätung/i,     "Versp\u00e4tung aus vorheriger Fahrt (Umlaufversp\u00e4tung)"],
+    [/warten.*anschluss|anschlussreisende/i,               "Warten auf Anschlussreisende"],
+    [/streik|gdl|evg/i,                                    "Streik des Bahnpersonals (GDL/EVG)"],
+    [/gegenzug|zugkreuzung/i,                              "Versp\u00e4teter Gegenzug / Zugkreuzung"]
+  ];
+  for(var gi=0;gi<GRUND_OCR.length;gi++){
+    if(GRUND_OCR[gi][0].test(t)){ grundVal=GRUND_OCR[gi][1]; break; }
+  }
+
+  // --- Felder befüllen ---
+  var ozEl = document.getElementById("oz_");
+  ozEl.value = trainVal;
+  ozEl.style.borderColor = "var(--amber)"; // immer manuell bestätigen
+  document.getElementById("om_").value    = delayVal;
+  document.getElementById("ov_").value    = vonVal;
+  document.getElementById("on_").value    = nachVal;
+
+  // Datum als lesbarer Text (TT.MM.JJJJ) für manuelles Eingabefeld
+  var odTxt = document.getElementById("od_txt");
+  var odHid = document.getElementById("od_");
+  if(dateVal){
+    var dp = dateVal.split("-"); // YYYY-MM-DD
+    if(dp.length===3){ odTxt.value = dp[2]+"."+dp[1]+"."+dp[0]; odTxt.style.borderColor=""; }
+    odHid.value = dateVal;
+  }
+
+  // Zeit als lesbarer Text für manuelles Eingabefeld
+  var oztTxt = document.getElementById("ozeit_txt");
+  var oztHid = document.getElementById("ozeit_");
+  if(timeVal){ oztTxt.value = timeVal; oztTxt.style.borderColor=""; oztHid.value = timeVal; }
+
+  document.getElementById("oart_").value  = isAusfall ? "ausfall" : "versp";
+  document.getElementById("oAusfallHint").style.display = isAusfall ? "block" : "none";
+  var gw = document.getElementById("ogrundWrap");
+  var go = document.getElementById("ogrund_");
+  if(grundVal && gw && go){ go.value=grundVal; gw.style.display="block"; }
+  else if(gw){ gw.style.display="none"; }
+  document.getElementById("oRes").style.display = "block";
+}
+
+function parseDateInput(v){
+  // Akzeptiert: TT.MM.JJJJ oder T.M.JJJJ
+  var m = v.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if(m){
+    document.getElementById("od_").value = m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");
+    document.getElementById("od_txt").style.borderColor = "";
+  } else {
+    document.getElementById("od_").value = "";
+  }
+}
+
+function parseTimeInput(v){
+  var m = v.match(/^(\d{1,2}):(\d{2})$/);
+  if(m){
+    document.getElementById("ozeit_").value = m[1].padStart(2,"0")+":"+m[2];
+    document.getElementById("ozeit_txt").style.borderColor = "";
+  } else {
+    document.getElementById("ozeit_").value = "";
+  }
+}
+
+function transferToForm(){
+  // Alle Werte VOR dem Tab-Wechsel sichern
+  var vals = {
+    zug:   document.getElementById("oz_").value,
+    min:   document.getElementById("om_").value,
+    von:   document.getElementById("ov_").value,
+    nach:  document.getElementById("on_").value,
+    dat:   document.getElementById("od_").value,
+    zeit:  document.getElementById("ozeit_").value,
+    art:   document.getElementById("oart_").value || "versp",
+    grund: (document.getElementById("ogrund_") && document.getElementById("ogrundWrap").style.display!=="none")
+           ? document.getElementById("ogrund_").value : ""
+  };
+  showTab("erfassen");
+  setTimeout(function(){
+    if(vals.zug)  document.getElementById("fz_").value = vals.zug;
+    if(vals.min)  document.getElementById("fm_").value = vals.min;
+    if(vals.von)  document.getElementById("fv_").value = vals.von;
+    if(vals.nach) document.getElementById("fn_").value = vals.nach;
+    if(vals.dat)  document.getElementById("fd_").value = vals.dat;
+    if(vals.zeit) document.getElementById("fzeit_").value = vals.zeit;
+    curArt = vals.art;
+    document.querySelectorAll(".rb").forEach(function(b){b.classList.remove("sel");});
+    document.querySelectorAll(".rb").forEach(function(b){
+      var oc = b.getAttribute("onclick")||"";
+      if(oc.indexOf("'"+curArt+"'")!==-1) b.classList.add("sel");
+    });
+    document.getElementById("mg").style.display = (curArt==="ausfall") ? "none" : "block";
+    if(vals.grund){
+      var gEl=document.getElementById("fgrund_");
+      if(gEl){gEl.value=vals.grund;updGrund();}
+    }
+    // Screenshot-Tab zurücksetzen
+    var dz=document.getElementById("dz_");
+    if(dz){
+      dz.innerHTML="<div style='font-size:2rem;margin-bottom:.4rem'>&#128247;</div>"
+        +"<div style='font-size:.85rem;font-weight:600;margin-bottom:.25rem'>Screenshot ausw\u00e4hlen</div>"
+        +"<div style='font-size:.75rem'>JPG oder PNG \u2022 Tippe hier</div>";
+      dz.classList.remove("has-img");
+      dz.onclick=function(){document.getElementById("imgI").click();};
+    }
+    document.getElementById("imgI").value="";
+    document.getElementById("oRes").style.display="none";
+    document.getElementById("oSt").style.display="none";
+    document.getElementById("oEx").style.display="none";
+    updE();
+    // Banner mit allen übernommenen Werten anzeigen
+    var banner = document.getElementById("transferBanner");
+    if(banner){
+      var parts = [];
+      if(vals.zug)  parts.push("Zug: "+vals.zug);
+      else          parts.push("\u26a0\ufe0f Zugnummer nicht erkannt \u2014 bitte manuell eintragen");
+      if(vals.von)  parts.push("Von: "+vals.von);
+      if(vals.nach) parts.push("Nach: "+vals.nach);
+      if(vals.dat)  parts.push("Datum: "+vals.dat.split("-").reverse().join("."));
+      if(vals.zeit) parts.push("Zeit: "+vals.zeit+" Uhr");
+      if(vals.art==="ausfall") parts.push("Art: Ausfall");
+      banner.innerHTML = "\u2714 &#220;bernommen \u2014 " + parts.join(" \u2022 ");
+      banner.style.display = "block";
+      setTimeout(function(){banner.style.display="none";}, 6000);
+    }
+  }, 250);
+}
+
+// Service Worker registrieren
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(reg){ console.log('[SW] Registered:', reg.scope); })
+      .catch(function(err){ console.log('[SW] Registration failed:', err); });
+  });
+}
+
+// Deep-Link Shortcuts (#erfassen, #verlauf etc.)
+(function(){
+  var hash = window.location.hash.replace('#','');
+  if(hash && ['erfassen','verlauf','anschreiben','tipps','profil','screenshot'].indexOf(hash) !== -1){
+    window.addEventListener('DOMContentLoaded', function(){
+      setTimeout(function(){ showTab(hash); }, 100);
+    });
+  }
+})();
+
+// Init — komplett in try/catch für iOS-Kompatibilität
+(function(){
+  try{
+    migrateData();
+    var td=new Date(),y=td.getFullYear(),m=String(td.getMonth()+1).padStart(2,"0"),d=String(td.getDate()).padStart(2,"0");
+    var fd=document.getElementById("fd_");
+    if(fd) fd.value=y+"-"+m+"-"+d;
+    var prg=document.getElementById("prg");
+    if(prg) prg.style.display="none";
+    // iOS-Hinweis falls localStorage nicht verfügbar
+    if(!_lsAvail){
+      var banner=document.createElement("div");
+      banner.style.cssText="position:fixed;bottom:0;left:0;right:0;background:#1E2438;border-top:1px solid #F59E0B;padding:.65rem 1rem;font-size:.75rem;color:#F59E0B;z-index:999;display:flex;gap:.75rem;align-items:center";
+      banner.innerHTML="&#9888;&#65039; <span><strong>Hinweis:</strong> Lokale Datei erkannt — Daten werden nur im Arbeitsspeicher gehalten und <strong>gehen beim Schließen verloren</strong>. Nutze Export/Import für dauerhaftes Speichern.</span>";
+      document.body.appendChild(banner);
+    }
+    rendD();
+  }catch(e){
+    // Letzte Rettung: UI trotzdem zeigen
+    console.error("BahnRecht init error:", e);
+    try{ rendD(); }catch(e2){}
+  }
+})();
+</script>
+</body>
+</html>
