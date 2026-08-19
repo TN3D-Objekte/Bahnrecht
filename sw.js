@@ -1,6 +1,6 @@
-// BahnRecht Service Worker v13
+// BahnRecht Service Worker v4
 // Beim Update hier hochzählen → Browser lädt alles neu
-const CACHE_NAME = 'bahnrecht-v13';
+const CACHE_NAME = 'bahnrecht-v4';
 const CACHE_STATIC = [
   './manifest.json',
   './icon-192.png',
